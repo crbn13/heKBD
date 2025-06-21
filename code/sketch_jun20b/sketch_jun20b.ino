@@ -28,13 +28,14 @@ float hz = 0;
 
 
 struct key {
-  uint8_t normalised;  // number between 0-255 where 0 is unpressed and 255 is fully depressed
-  uint16_t real;       // the value from ADC
-  float min_real;      // minimum value read from ADC
-  float max_real;      // value from ADC analog to digital conversion
-  float factor;        // a number to map the un normalised values to 0-255 num
-  bool active_state;   // The state that was last sent over usb
-  uint8_t keycode;     // the HID_KEY value of the specific switch
+  uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
+  uint16_t real;          // the value from ADC
+  float min_real;         // minimum value read from ADC
+  float max_real;         // value from ADC analog to digital conversion
+  float factor;           // a number to map the un normalised values to 0-255 num
+  bool active_state;      // The state that was last sent over usb
+  uint8_t keycode;        // the HID_KEY value of the specific switch
+  int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
 
   key()
     : normalised(0), real(0), min_real(MAX_ANALOG_VALUE), max_real(MIN_ANALOG_VALUE), factor(0.0F), active_state(0), keycode(0) {
@@ -91,13 +92,13 @@ void setup() {
   keys[1].keycode = HID_KEY_F;
 
   // Find old min max values ~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   keys[0].real = analogRead(ADC1);
   keys[1].real = analogRead(ADC2);
 
-  // Set min vals : 
+  // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
-    keys[i].min_real = keys[i].real; // set the min value to the value at startup
+    keys[i].min_real = keys[i].real;  // set the min value to the value at startup
   }
   // need to implement them being saved ofc
 
@@ -109,45 +110,42 @@ const int cycles = 1000;
 void loop() {
   start = micros();  // get time?
 
-  for (int i = 0; i < cycles; i++) 
-  {
+  for (int i = 0; i < cycles; i++) {
 
     delay(1);
 
 
 #ifdef TINYUSB_NEED_POLLING_TASK
-  // Manual call tud_task since it isn't called by Core's background
-  TinyUSBDevice.task();
+    // Manual call tud_task since it isn't called by Core's background
+    TinyUSBDevice.task();
 #endif
-
-  // not enumerated()/mounted() yet: nothing to do
-  if (!TinyUSBDevice.mounted()) {
-    return;
-  }
-
+    // not enumerated()/mounted() yet: nothing to do
+    if (!TinyUSBDevice.mounted()) {
+      return;
+    }
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
 
-    // Serial.print(keys[0].real);
-    // Serial.print("  ");
-    // Serial.print(keys[0].normalised);
-    // Serial.print("  ");
-    // Serial.print(keys[0].factor);
-    // Serial.print("  ");
-    // Serial.print(keys[0].max_real);
-    // Serial.print("  ");
-    // Serial.print(keys[0].min_real);
-    // Serial.print("  ");
-    // Serial.print(keys[0].active_state);
+    Serial.print(keys[0].real);
+    Serial.print("  ");
+    Serial.print(keys[0].normalised);
+    Serial.print("  ");
+    Serial.print(keys[0].factor);
+    Serial.print("  ");
+    Serial.print(keys[0].max_real);
+    Serial.print("  ");
+    Serial.print(keys[0].min_real);
+    Serial.print("  ");
+    Serial.print(keys[0].active_state);
 
-    // Serial.print("\t|  ");
-    // Serial.print(analogRead(ADC2));
-    // Serial.print("  ");
-    // Serial.print(keys[1].normalised);
-    // Serial.print("  ");
-    // Serial.print(keys[1].factor);
-    // Serial.print("\t| HZ = ");
-    // Serial.println(hz);
+    Serial.print("\t|  ");
+    Serial.print(analogRead(ADC2));
+    Serial.print("  ");
+    Serial.print(keys[1].normalised);
+    Serial.print("  ");
+    Serial.print(keys[1].factor);
+    Serial.print("\t| HZ = ");
+    Serial.println(hz);
 
     process_hid();
   }
@@ -161,8 +159,8 @@ void loop() {
   // When printing each analog value to serial : 9,000 hz
 
 
-  Serial.print("\t| HZ = ");
-  Serial.println(hz);
+  // Serial.print("\t| HZ = ");
+  // Serial.println(hz);
 }
 
 
@@ -174,7 +172,7 @@ void process_hid() {
   uint8_t count = 0;            // the number of keys being pressed
   uint8_t keycodes[6] = { 0 };  // array of 6 keys that are being pressed
   bool modifier_changed = false;
-  
+
   keys[0].real = analogRead(ADC1);
   keys[1].real = analogRead(ADC2);
 
@@ -189,7 +187,7 @@ void process_hid() {
       modifier_changed = true;
     }
 
-    auto change_modifier = [&] ( ) {
+    auto change_modifier = [&]() {
       if (keys[i].max_real != keys[i].min_real && keys[i].max_real - keys[i].min_real > 50)  // only set modifier if
         keys[i].factor = (float)(NORMALISED_ADC_VAL)(-1) / (keys[i].max_real - keys[i].min_real);
       modifier_changed = false;
@@ -203,7 +201,7 @@ void process_hid() {
 
     keys[i].normalised = +int(abs((+keys[i].real - keys[i].min_real) * keys[i].factor));
 
-    if (+int(abs((+keys[i].real - keys[i].min_real) * keys[i].factor)) > MAX_NORMALISED_ADC_VAL) // no cheeky buffer overflows
+    if (+int(abs((+keys[i].real - keys[i].min_real) * keys[i].factor)) > MAX_NORMALISED_ADC_VAL)  // no cheeky buffer overflows
       keys[i].normalised = MAX_NORMALISED_ADC_VAL;
 
     // rapid trigger is by standard :
@@ -212,46 +210,48 @@ void process_hid() {
     const int change_buffer = 2;
 
     // 0 IS NOT DEPRESSED, 255 is FULLY DEPRESSED
-    if (keys[i].active_state)
-    {
-      if ( keys[i].normalised < bounds_checker && keys[i].normalised < +previous ) // check if unpressed and key at top
+    if (keys[i].active_state) {
+      keys[i].has_value_changed = 0;
+      if (keys[i].normalised < bounds_checker && keys[i].normalised < +previous)  // check if unpressed and key at top
       {
         keys[i].active_state = false;
         change_modifier();
-      }
-      else if (keys[i].normalised < +previous - change_buffer && keys[i].normalised < MAX_NORMALISED_ADC_VAL - bounds_checker) // check if direction of keystroke changed in middle of stroke
+      } else if (keys[i].normalised < +previous - change_buffer && keys[i].normalised < MAX_NORMALISED_ADC_VAL - bounds_checker)  // check if direction of keystroke changed in middle of stroke
       {
         keys[i].active_state = false;
         keycodes[count++] = keys[i].keycode;
-      }
-      else if (keys[i].normalised > MAX_NORMALISED_ADC_VAL - bounds_checker) // 
+      } else if (keys[i].normalised > MAX_NORMALISED_ADC_VAL - bounds_checker)  // if its at the 255 ranges
       {
         keycodes[count++] = keys[i].keycode;
-      }
-      else // if neither then set value to previous and switch still pressed
+
+      } else if (keys[i].normalised > previous)  // check if key travelling downwards
+      {
+        keycodes[count++] = keys[i].keycode;
+      } else  // if neither then set value to previous and switch still pressed
       {
         keycodes[count++] = keys[i].keycode;
         keys[i].normalised = previous;
       }
-    } 
-    else // if key not already pressed
+    } else  // if key not already pressed
     {
       if (keys[i].normalised > +previous + change_buffer && keys[i].normalised > bounds_checker)  // check that it has moved enough to achuate a press downwards
       {
+        keys[i].has_value_changed = 0;
         keys[i].active_state = true;
         keycodes[count++] = keys[i].keycode;
-      } 
-      else if ( keys[i].normalised > previous) // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
+      } else if (keys[i].normalised > previous)  // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
       {
         keys[i].normalised = previous;
-      }
-      else // when keys.normalised is < previous the key is travelling upwards
+      } else  // when keys.normalised is < previous the key is travelling upwards
       {
-
+        if (keys[i].normalised == previous) { keys[i].has_value_changed++; }
       }
     }
 
-
+    if (keys[i].has_value_changed > 50) {
+      keys[i].min_real = keys[i].real;
+      keys[i].has_value_changed = 0;
+    }
 
     if (count > 5)  // usb hid has a max report of 6 keys at a time :(
       break;        // break out of loop
