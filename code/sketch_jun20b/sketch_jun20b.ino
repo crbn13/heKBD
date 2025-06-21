@@ -104,11 +104,16 @@ void setup() {
 }  // end of setup
 
 
-const int cycles = 1;
+const int cycles = 1000;
 
 void loop() {
   start = micros();  // get time?
-  delay(1);
+
+  for (int i = 0; i < cycles; i++) 
+  {
+
+    delay(1);
+
 
 #ifdef TINYUSB_NEED_POLLING_TASK
   // Manual call tud_task since it isn't called by Core's background
@@ -120,30 +125,29 @@ void loop() {
     return;
   }
 
-  for (int i = 0; i < cycles; i++) {
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
 
-    Serial.print(keys[0].real);
-    Serial.print("  ");
-    Serial.print(keys[0].normalised);
-    Serial.print("  ");
-    Serial.print(keys[0].factor);
-    Serial.print("  ");
-    Serial.print(keys[0].max_real);
-    Serial.print("  ");
-    Serial.print(keys[0].min_real);
-    Serial.print("  ");
-    Serial.print(keys[0].active_state);
+    // Serial.print(keys[0].real);
+    // Serial.print("  ");
+    // Serial.print(keys[0].normalised);
+    // Serial.print("  ");
+    // Serial.print(keys[0].factor);
+    // Serial.print("  ");
+    // Serial.print(keys[0].max_real);
+    // Serial.print("  ");
+    // Serial.print(keys[0].min_real);
+    // Serial.print("  ");
+    // Serial.print(keys[0].active_state);
 
-    Serial.print("\t|  ");
-    Serial.print(analogRead(ADC2));
-    Serial.print("  ");
-    Serial.print(keys[1].normalised);
-    Serial.print("  ");
-    Serial.print(keys[1].factor);
-    Serial.print("\t| HZ = ");
-    Serial.println(hz);
+    // Serial.print("\t|  ");
+    // Serial.print(analogRead(ADC2));
+    // Serial.print("  ");
+    // Serial.print(keys[1].normalised);
+    // Serial.print("  ");
+    // Serial.print(keys[1].factor);
+    // Serial.print("\t| HZ = ");
+    // Serial.println(hz);
 
     process_hid();
   }
@@ -157,8 +161,8 @@ void loop() {
   // When printing each analog value to serial : 9,000 hz
 
 
-  // Serial.print("\t| HZ = ");
-  // Serial.println(hz);
+  Serial.print("\t| HZ = ");
+  Serial.println(hz);
 }
 
 
@@ -220,7 +224,7 @@ void process_hid() {
         keys[i].active_state = false;
         keycodes[count++] = keys[i].keycode;
       }
-      else if (keys[i].normalised < MAX_NORMALISED_ADC_VAL - bounds_checker) // 
+      else if (keys[i].normalised > MAX_NORMALISED_ADC_VAL - bounds_checker) // 
       {
         keycodes[count++] = keys[i].keycode;
       }
