@@ -106,7 +106,7 @@ void setup() {
 }  // end of setup
 
 
-const int cycles = 1000;
+const int cycles = 500;
 
 void loop() {
   start = micros();  // get time?
@@ -290,6 +290,8 @@ void process_hid() {
       } else  // when keys.normalised is < previous the key is travelling upwards
       {
         if (keys[i].normalised == previous) { keys[i].has_value_changed++; }
+        else {         keys[i].has_value_changed = 0;  // this means that it just doesnt work? 
+        }
       }
     }
 
