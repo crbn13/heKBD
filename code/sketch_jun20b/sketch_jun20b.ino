@@ -157,7 +157,36 @@ void loop() {
 
     process_hid();
   }
+    Serial.print(keys[0].real);
+    Serial.print("  ");
+    Serial.print(keys[0].normalised);
+    Serial.print("  ");
+    Serial.print(keys[0].factor);
+    Serial.print("  ");
+    Serial.print(keys[0].max_real);
+    Serial.print("  ");
+    Serial.print(keys[0].min_real);
+    Serial.print("  ");
+    Serial.print(keys[0].active_state);
+    Serial.print("  ");
+    Serial.print(keys[0].has_value_changed);
+    Serial.print("\t  |  ");
 
+    Serial.print(keys[1].real);
+    Serial.print("  ");
+    Serial.print(keys[1].normalised);
+    Serial.print("  ");
+    Serial.print(keys[1].factor);
+    Serial.print("  ");
+    Serial.print(keys[1].max_real);
+    Serial.print("  ");
+    Serial.print(keys[1].min_real);
+    Serial.print("  ");
+    Serial.print(keys[1].active_state);
+    Serial.print("  ");
+    Serial.print(keys[1].has_value_changed);
+    Serial.print("\t| HZ = ");
+    Serial.println(hz);
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -192,6 +221,10 @@ void process_hid() {
 
     if (keys[i].max_real < keys[i].real) {
       keys[i].max_real = keys[i].real;
+      modifier_changed = true;
+    }
+    if (keys[i].min_real > keys[i].real) {
+      keys[i].min_real = keys[i].real;
       modifier_changed = true;
     }
 
@@ -260,7 +293,7 @@ void process_hid() {
       }
     }
 
-    if (keys[i].has_value_changed > 50) {
+    if (keys[i].has_value_changed > 100) {
       keys[i].min_real = keys[i].real;
       keys[i].has_value_changed = 0;
     }
