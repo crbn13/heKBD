@@ -27,6 +27,7 @@ float hz = 0;
 
 
 
+
 struct key {
   uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
   uint16_t real;          // the value from ADC
@@ -126,26 +127,33 @@ void loop() {
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
 
-    Serial.print(keys[0].real);
-    Serial.print("  ");
-    Serial.print(keys[0].normalised);
-    Serial.print("  ");
-    Serial.print(keys[0].factor);
-    Serial.print("  ");
-    Serial.print(keys[0].max_real);
-    Serial.print("  ");
-    Serial.print(keys[0].min_real);
-    Serial.print("  ");
-    Serial.print(keys[0].active_state);
+    //Serial.print(keys[0].real);
+    //Serial.print("  ");
+    //Serial.print(keys[0].normalised);
+    //Serial.print("  ");
+    //Serial.print(keys[0].factor);
+    //Serial.print("  ");
+    //Serial.print(keys[0].max_real);
+    //Serial.print("  ");
+    //Serial.print(keys[0].min_real);
+    //Serial.print("  ");
+    //Serial.print(keys[0].active_state);
+    //Serial.print("\t  |  ");
 
-    Serial.print("\t|  ");
-    Serial.print(analogRead(ADC2));
-    Serial.print("  ");
-    Serial.print(keys[1].normalised);
-    Serial.print("  ");
-    Serial.print(keys[1].factor);
-    Serial.print("\t| HZ = ");
-    Serial.println(hz);
+    //Serial.print(keys[1].real);
+    //Serial.print("  ");
+    //Serial.print(keys[1].normalised);
+    //Serial.print("  ");
+    //Serial.print(keys[1].factor);
+    //Serial.print("  ");
+    //Serial.print(keys[1].max_real);
+    //Serial.print("  ");
+    //Serial.print(keys[1].min_real);
+    //Serial.print("  ");
+    //Serial.print(keys[1].active_state);
+
+    //Serial.print("\t| HZ = ");
+    //Serial.println(hz);
 
     process_hid();
   }
@@ -209,6 +217,10 @@ void process_hid() {
     const int bounds_checker = 10;  // needs renaming, it accounts for the random variance in the analogue input
     const int change_buffer = 2;
 
+    //  MOTHER OPTIMSATION
+    // divide by the bounds checker and ignore the remainder which has the ish effect as the bounds checker
+    // but... if its near the bound value it wouldnt work
+
     // 0 IS NOT DEPRESSED, 255 is FULLY DEPRESSED
     if (keys[i].active_state) {
       keys[i].has_value_changed = 0;
@@ -220,7 +232,7 @@ void process_hid() {
       {
         keys[i].active_state = false;
         keycodes[count++] = keys[i].keycode;
-      } else if (keys[i].normalised > MAX_NORMALISED_ADC_VAL - bounds_checker)  // if its at the 255 ranges
+      } else if (keys[i].normalised >= MAX_NORMALISED_ADC_VAL - bounds_checker)  // if its at the 255 ranges
       {
         keycodes[count++] = keys[i].keycode;
 
