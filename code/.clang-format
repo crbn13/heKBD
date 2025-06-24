@@ -1,0 +1,17 @@
+---
+BasedOnStyle: WebKit
+Language: Cpp
+IndentWidth: 4
+#TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+NamespaceIndentation: None
+AllowShortIfStatementsOnASingleLine: false
+AlignAfterOpenBracket: AlwaysBreak
+BinPackArguments: false
+BinPackParameters: false
+# COMMENTS :
+ReflowComments:  true
+PenaltyBreakComment: 0  # modified; was 300
+PenaltyBreakOpenParenthesis: 1  # modified; was 0

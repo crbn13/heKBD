@@ -157,36 +157,36 @@ void loop() {
 
     process_hid();
   }
-    Serial.print(keys[0].real);
-    Serial.print("  ");
-    Serial.print(keys[0].normalised);
-    Serial.print("  ");
-    Serial.print(keys[0].factor);
-    Serial.print("  ");
-    Serial.print(keys[0].max_real);
-    Serial.print("  ");
-    Serial.print(keys[0].min_real);
-    Serial.print("  ");
-    Serial.print(keys[0].active_state);
-    Serial.print("  ");
-    Serial.print(keys[0].has_value_changed);
-    Serial.print("\t  |  ");
+  Serial.print(keys[0].real);
+  Serial.print("  ");
+  Serial.print(keys[0].normalised);
+  Serial.print("  ");
+  Serial.print(keys[0].factor);
+  Serial.print("  ");
+  Serial.print(keys[0].max_real);
+  Serial.print("  ");
+  Serial.print(keys[0].min_real);
+  Serial.print("  ");
+  Serial.print(keys[0].active_state);
+  Serial.print("  ");
+  Serial.print(keys[0].has_value_changed);
+  Serial.print("\t  |  ");
 
-    Serial.print(keys[1].real);
-    Serial.print("  ");
-    Serial.print(keys[1].normalised);
-    Serial.print("  ");
-    Serial.print(keys[1].factor);
-    Serial.print("  ");
-    Serial.print(keys[1].max_real);
-    Serial.print("  ");
-    Serial.print(keys[1].min_real);
-    Serial.print("  ");
-    Serial.print(keys[1].active_state);
-    Serial.print("  ");
-    Serial.print(keys[1].has_value_changed);
-    Serial.print("\t| HZ = ");
-    Serial.println(hz);
+  Serial.print(keys[1].real);
+  Serial.print("  ");
+  Serial.print(keys[1].normalised);
+  Serial.print("  ");
+  Serial.print(keys[1].factor);
+  Serial.print("  ");
+  Serial.print(keys[1].max_real);
+  Serial.print("  ");
+  Serial.print(keys[1].min_real);
+  Serial.print("  ");
+  Serial.print(keys[1].active_state);
+  Serial.print("  ");
+  Serial.print(keys[1].has_value_changed);
+  Serial.print("\t| HZ = ");
+  Serial.println(hz);
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -289,15 +289,18 @@ void process_hid() {
         keys[i].normalised = previous;
       } else  // when keys.normalised is < previous the key is travelling upwards
       {
-        if (keys[i].normalised == previous) { keys[i].has_value_changed++; }
-        else {         keys[i].has_value_changed = 0;  // this means that it just doesnt work? 
+        if (keys[i].normalised == previous) {
+          keys[i].has_value_changed++;
+        } else {
+          keys[i].has_value_changed = 0;  // this means that it just doesnt work?
         }
       }
     }
 
-    if (keys[i].has_value_changed > 100) {
+    if (keys[i].has_value_changed > 200) {
       keys[i].min_real = keys[i].real;
       keys[i].has_value_changed = 0;
+      change_modifier();
     }
 
     if (count > 5)  // usb hid has a max report of 6 keys at a time :(
