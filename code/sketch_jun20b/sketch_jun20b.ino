@@ -1,7 +1,6 @@
 #include "Adafruit_TinyUSB.h"
-
 // Number of keyboard keys
-#define KEY_COUNT 2
+#define KEY_COUNT 9
 
 
 // Analogue pins
@@ -12,6 +11,14 @@ typedef uint8_t NORMALISED_ADC_VAL;
 
 #define MAX_ANALOG_VALUE 4096
 #define MIN_ANALOG_VALUE 0
+
+#define MTP_BIN_PIN_1 D0  // These directly controll each multiplexer
+#define MTP_BIN_PIN_2 D1
+#define MTP_BIN_PIN_3 D2
+#define MTP_BIN_PIN_4 D3
+#define MTP_BIN_PIN_5 D4  // These enable the multiplexer disable pins
+#define MTP_BIN_PIN_6 D5
+#define MTP_BIN_PIN_7 D6
 
 uint8_t const desc_hid_report[] = {
   TUD_HID_REPORT_DESC_KEYBOARD()
@@ -80,6 +87,16 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 #endif
 
+  // set binary multiplexer output pins
+
+  pinMode(MTP_BIN_PIN_1, OUTPUT);
+  pinMode(MTP_BIN_PIN_2, OUTPUT);
+  pinMode(MTP_BIN_PIN_3, OUTPUT);
+  pinMode(MTP_BIN_PIN_4, OUTPUT);
+  pinMode(MTP_BIN_PIN_5, OUTPUT);
+  pinMode(MTP_BIN_PIN_6, OUTPUT);
+  pinMode(MTP_BIN_PIN_7, OUTPUT);
+
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // need to actually make the custom keymap
@@ -89,16 +106,16 @@ void setup() {
   // keys[i].keycode = keymap.key[]
   // }
 
+
+  analogReadResolution(12);
+
   keys[0].keycode = HID_KEY_D;
   keys[1].keycode = HID_KEY_F;
 
-  // Find old min max values ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  keys[0].real = analogRead(ADC1);
-  keys[1].real = analogRead(ADC2);
 
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
+    keys[i].real = analogRead(ADC1);
     keys[i].min_real = keys[i].real;  // set the min value to the value at startup
   }
   // need to implement them being saved ofc
@@ -106,10 +123,10 @@ void setup() {
 }  // end of setup
 
 
-const int cycles = 500;
+const int cycles = 1;
 
 void loop() {
-  start = micros();  // get time?
+  start = micros();  // get time
 
   for (int i = 0; i < cycles; i++) {
 
@@ -127,36 +144,9 @@ void loop() {
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
 
-    //Serial.print(keys[0].real);
-    //Serial.print("  ");
-    //Serial.print(keys[0].normalised);
-    //Serial.print("  ");
-    //Serial.print(keys[0].factor);
-    //Serial.print("  ");
-    //Serial.print(keys[0].max_real);
-    //Serial.print("  ");
-    //Serial.print(keys[0].min_real);
-    //Serial.print("  ");
-    //Serial.print(keys[0].active_state);
-    //Serial.print("\t  |  ");
-
-    //Serial.print(keys[1].real);
-    //Serial.print("  ");
-    //Serial.print(keys[1].normalised);
-    //Serial.print("  ");
-    //Serial.print(keys[1].factor);
-    //Serial.print("  ");
-    //Serial.print(keys[1].max_real);
-    //Serial.print("  ");
-    //Serial.print(keys[1].min_real);
-    //Serial.print("  ");
-    //Serial.print(keys[1].active_state);
-
-    //Serial.print("\t| HZ = ");
-    //Serial.println(hz);
-
     process_hid();
   }
+  /*
   Serial.print(keys[0].real);
   Serial.print("  ");
   Serial.print(keys[0].normalised);
@@ -185,6 +175,14 @@ void loop() {
   Serial.print(keys[1].active_state);
   Serial.print("  ");
   Serial.print(keys[1].has_value_changed);
+*/
+
+  for (uint8_t i = 0; i < KEY_COUNT; i++) {
+    Serial.print(" | Pin ");
+    Serial.print(i);
+    Serial.print(" = ");
+    Serial.print(keys[i].real);
+  }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
   end = micros();
@@ -200,7 +198,20 @@ void loop() {
   // Serial.println(hz);
 }
 
+//
+void setpins(const uint8_t value) {
+  // Set direct multiplexer controll pins
+  digitalWrite(MTP_BIN_PIN_1, bool(value & (0b00000001)));
+  digitalWrite(MTP_BIN_PIN_2, bool(value & (0b00000010)));
+  digitalWrite(MTP_BIN_PIN_3, bool(value & (0b00000100)));
+  digitalWrite(MTP_BIN_PIN_4, bool(value & (0b00001000)));
 
+  // set multiplexer disable pins
+  digitalWrite(MTP_BIN_PIN_5, bool(value & (0b00110000)));  // 000 the value when value = false
+
+  digitalWrite(MTP_BIN_PIN_6, bool(value & (0b00100000)));  // 001
+  digitalWrite(MTP_BIN_PIN_7, bool(value & (0b01000000)));  // 010
+}
 
 void process_hid() {
   // used to avoid send multiple consecutive zero report for keyboard
@@ -210,13 +221,19 @@ void process_hid() {
   uint8_t keycodes[6] = { 0 };  // array of 6 keys that are being pressed
   bool modifier_changed = false;
 
-  keys[0].real = analogRead(ADC1);
-  keys[1].real = analogRead(ADC2);
+
+
+
 
 
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++) {
+
     // Multiplexer code to set value would be here but it doesnt exist yet
+
+    setpins(i);
+    keys[i].real = analogRead(ADC1);
+
     modifier_changed = false;
 
     if (keys[i].max_real < keys[i].real) {
