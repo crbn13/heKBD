@@ -207,10 +207,22 @@ void setpins(const uint8_t value) {
   digitalWrite(MTP_BIN_PIN_4, bool(value & (0b00001000)));
 
   // set multiplexer disable pins
-  digitalWrite(MTP_BIN_PIN_5, bool(value & (0b00110000)));  // 000 the value when value = false
-
-  digitalWrite(MTP_BIN_PIN_6, bool(value & (0b00100000)));  // 001
-  digitalWrite(MTP_BIN_PIN_7, bool(value & (0b01000000)));  // 010
+  digitalWrite(MTP_BIN_PIN_5, ~(bool(value & (0b00110000))));  // 000 the value when value = false
+  digitalWrite(MTP_BIN_PIN_6, bool(value & (0b00100000)));     // 001
+  digitalWrite(MTP_BIN_PIN_7, bool(value & (0b01000000)));     // 010
+  Serial.print("Int val = ");
+  Serial.print(+value);
+  if (bool(value & (0b00110000)))
+    Serial.print(" True ");
+  else Serial.print(" False ");
+  if (~(bool(value & (0b00010000))))
+    Serial.print(" True ");
+  else
+    Serial.print(" False ");
+  if (~(bool(value & (0b00100000))))
+    Serial.println(" True ");
+  else
+    Serial.println(" False ");
 }
 
 void process_hid() {
