@@ -1,6 +1,6 @@
 #include "Adafruit_TinyUSB.h"
 // Number of keyboard keys
-#define KEY_COUNT 60
+#define KEY_COUNT 9
 
 // Analogue pins
 #define ADC1 A0
@@ -212,9 +212,9 @@ void set_multiplexer(const uint8_t value)
   else
   {
     active_mtp = +value/16u;
-    digitalWrite(MTP_BIN_PIN_5, (0 == active_mtp));
-    digitalWrite(MTP_BIN_PIN_6, (1 == active_mtp));
-    digitalWrite(MTP_BIN_PIN_7, (2 == active_mtp));
+    digitalWrite(MTP_BIN_PIN_5, !(0 == active_mtp));
+    digitalWrite(MTP_BIN_PIN_6, !(1 == active_mtp));
+    digitalWrite(MTP_BIN_PIN_7, !(2 == active_mtp));
   }
   Serial.print("Val : ");
   Serial.print(value);
@@ -236,11 +236,19 @@ void process_hid()
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-
     // Multiplexer code to set value would be here but it doesnt exist yet
 
-    set_pins(i);
-    set_multiplexer(i);
+    if ( i > 4 ) // temporary while doing silly things with 9 key keyboard
+    {
+      set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
+      set_multiplexer(i % 5 + 16);
+    }
+    else
+    {
+      set_pins(i);
+      set_multiplexer(i);
+    }
+
     keys[i].real = analogRead(ADC1);
 
     modifier_changed = false;
