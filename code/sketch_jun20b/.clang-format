@@ -5,5 +5,5 @@ BinPackArguments: false
 BinPackParameters: false
 # COMMENTS :
 ReflowComments:  true
-PenaltyBreakComment: 0  # modified; was 300
+PenaltyBreakComment: 200  # modified; was 300
 PenaltyBreakOpenParenthesis: 1  # modified; was 0
