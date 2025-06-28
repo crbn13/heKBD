@@ -104,10 +104,6 @@ void setup()
 
   analogReadResolution(12);
 
-  keys[0].keycode = HID_KEY_D;
-  keys[1].keycode = HID_KEY_F;
-
-
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
     keys[i].real = analogRead(ADC1);
@@ -118,7 +114,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 1;
+const int cycles = 100;
 
 void loop()
 {
@@ -196,7 +192,7 @@ void loop()
 }
 
 // Sets the 4 channel digital output to controll active multiplexer
-void setpins(const uint8_t value)
+void set_pins(const uint8_t value)
 {
   // Set direct multiplexer controll pins
   digitalWrite(MTP_BIN_PIN_1, bool(value & (0b00000001)));
@@ -204,46 +200,28 @@ void setpins(const uint8_t value)
   digitalWrite(MTP_BIN_PIN_3, bool(value & (0b00000100)));
   digitalWrite(MTP_BIN_PIN_4, bool(value & (0b00001000)));
 }
+
 // Sets the active multiplexer
 void set_multiplexer(const uint8_t value)
 {
   static unsigned int active_mtp = 0;
 
-  if (active_mtp == +value / 16) // integer division
+  if (active_mtp == +value / 16u) // integer division
   {
   }
   else
   {
+    active_mtp = +value/16u;
     digitalWrite(MTP_BIN_PIN_5, (0 == active_mtp));
     digitalWrite(MTP_BIN_PIN_6, (1 == active_mtp));
     digitalWrite(MTP_BIN_PIN_7, (2 == active_mtp));
   }
-
-  // set multiplexer disable pins
-  digitalWrite(
-      MTP_BIN_PIN_5,
-      !bool(value & (0b11110000))); // 000 the value when value = false
-  digitalWrite(
-      MTP_BIN_PIN_6,
-      bool((value & (0b00010000) & ~(value & 0b11100000)))); // 001
-  digitalWrite(
-      MTP_BIN_PIN_7,
-      bool((value & (0b00100000) & ~(value & 0b11010000)))); // 010
-
-  Serial.print("Int val = ");
-  Serial.print(+value);
-  if (!bool(value & (0b11110000)))
-    Serial.print("  Enabled MTP  ");
-  else
-    Serial.print("  Disabled MTP  ");
-  if (bool((value & (0b00010000) & ~(value & 0b11100000))))
-    Serial.print("Enabled MTP  ");
-  else
-    Serial.print("Disabled MTP  ");
-  if (bool((value & (0b00100000) & ~(value & 0b11010000))))
-    Serial.println("Enabled MTP  ");
-  else
-    Serial.println("Disabled MTP  ");
+  Serial.print("Val : ");
+  Serial.print(value);
+  Serial.print("  ");
+  Serial.print(0 == active_mtp);
+  Serial.print(1 == active_mtp);
+  Serial.println(2 == active_mtp);
 }
 
 void process_hid()
@@ -261,7 +239,8 @@ void process_hid()
 
     // Multiplexer code to set value would be here but it doesnt exist yet
 
-    setpins(i);
+    set_pins(i);
+    set_multiplexer(i);
     keys[i].real = analogRead(ADC1);
 
     modifier_changed = false;
