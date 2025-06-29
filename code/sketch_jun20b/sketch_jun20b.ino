@@ -123,15 +123,15 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 1;
+const int cycles = 300;
 
 void loop()
 {
   start = micros(); // get time
 
+  unsigned int inner_start = micros();
   for (int i = 0; i < cycles; i++)
   {
-    unsigned int inner_start = micros();
 
 #ifdef TINYUSB_NEED_POLLING_TASK
     // Manual call tud_task since it isn't called by Core's background
@@ -147,6 +147,7 @@ void loop()
 
     process_hid();
     delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
+    inner_start = micros();
   }
   /*
   Serial.print(keys[0].real);
