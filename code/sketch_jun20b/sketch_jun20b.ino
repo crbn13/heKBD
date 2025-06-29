@@ -94,6 +94,15 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  keys[0].keycode = HID_KEY_A;
+  keys[1].keycode = HID_KEY_B;
+  keys[2].keycode = HID_KEY_C;
+  keys[3].keycode = HID_KEY_D;
+  keys[4].keycode = HID_KEY_E;
+  keys[5].keycode = HID_KEY_F;
+  keys[6].keycode = HID_KEY_G;
+  keys[7].keycode = HID_KEY_H;
+  keys[8].keycode = HID_KEY_I;
 
   // need to actually make the custom keymap
 
@@ -102,7 +111,7 @@ void setup()
   // keys[i].keycode = keymap.key[]
   // }
 
-  analogReadResolution(12);
+  //analogReadResolution(12);
 
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
@@ -114,7 +123,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 100;
+const int cycles = 1;
 
 void loop()
 {
@@ -122,8 +131,7 @@ void loop()
 
   for (int i = 0; i < cycles; i++)
   {
-
-    delay(1);
+    unsigned int inner_start = micros();
 
 #ifdef TINYUSB_NEED_POLLING_TASK
     // Manual call tud_task since it isn't called by Core's background
@@ -138,6 +146,7 @@ void loop()
     // val = analogRead(ADC2);
 
     process_hid();
+    delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
   }
   /*
   Serial.print(keys[0].real);
@@ -216,12 +225,14 @@ void set_multiplexer(const uint8_t value)
     digitalWrite(MTP_BIN_PIN_6, !(1 == active_mtp));
     digitalWrite(MTP_BIN_PIN_7, !(2 == active_mtp));
   }
+/*
   Serial.print("Val : ");
   Serial.print(value);
   Serial.print("  ");
   Serial.print(0 == active_mtp);
   Serial.print(1 == active_mtp);
   Serial.println(2 == active_mtp);
+*/
 }
 
 void process_hid()
