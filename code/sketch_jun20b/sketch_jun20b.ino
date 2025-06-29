@@ -123,13 +123,14 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 300;
+const int cycles = 10;
 
 void loop()
 {
   start = micros(); // get time
 
   unsigned int inner_start = micros();
+
   for (int i = 0; i < cycles; i++)
   {
 
@@ -189,6 +190,7 @@ void loop()
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
+
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -214,7 +216,7 @@ void set_pins(const uint8_t value)
 // Sets the active multiplexer
 void set_multiplexer(const uint8_t value)
 {
-  static unsigned int active_mtp = 0;
+  static unsigned int active_mtp = -1;
 
   if (active_mtp == +value / 16u) // integer division
   {
@@ -238,30 +240,41 @@ void set_multiplexer(const uint8_t value)
 
 void process_hid()
 {
+  static bool has_init_pins = false;
+
+  if (!has_init_pins)
+  {
+    set_pins(0);
+    set_multiplexer(0);
+    has_init_pins = true;
+    delay(1);
+  }
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
 
   uint8_t count = 0;         // the number of keys being pressed
   uint8_t keycodes[6] = {0}; // array of 6 keys that are being pressed
   bool modifier_changed = false;
+  
+  set_pins(0);
+  set_multiplexer(0);
 
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-    // Multiplexer code to set value would be here but it doesnt exist yet
+    keys[i].real = analogRead(ADC1); // reads analogue signal last
 
-    if ( i > 4 ) // temporary while doing silly things with 9 key keyboard
+    if ( i+1 > 4 ) // temporary while doing silly things with 9 key keyboard
     {
-      set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
-      set_multiplexer(i % 5 + 16);
+      set_pins((i+1) % 5 + 16); // + 16 to skip to the next multiplexer 
+      set_multiplexer((i+1) % 5 + 16);
     }
     else
     {
-      set_pins(i);
-      set_multiplexer(i);
+      set_pins(i+1);
+      set_multiplexer(i+1);
     }
 
-    keys[i].real = analogRead(ADC1);
 
     modifier_changed = false;
 
@@ -378,7 +391,10 @@ void process_hid()
 
     if (count > 5) // usb hid has a max report of 6 keys at a time :(
       break;       // break out of loop
-  }
+  } // For loop
+
+  set_pins(0); // Sets the values for the next loop 
+  set_multiplexer(0);
 
   if (TinyUSBDevice.suspended() && count)
   {
