@@ -127,7 +127,6 @@ const int cycles = 100;
 
 void loop()
 {
-  Serial.println("im alive");
   start = micros(); // get time
 
   unsigned int inner_start = micros();
@@ -247,15 +246,10 @@ void set_multiplexer(const uint8_t value)
 
 void process_hid()
 {
-  static bool has_init_pins = false;
 
-  if (!has_init_pins)
-  {
     set_pins(0);
     set_multiplexer(0);
-    has_init_pins = true;
-    delay(1);
-  }
+
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
 
@@ -270,15 +264,14 @@ void process_hid()
 
     if ( i+1 > 4 ) // temporary while doing silly things with 9 key keyboard
     {
-      set_multiplexer(i % 5 + 16);
-      set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
+      set_multiplexer((i+1) % 5 + 16);
+      set_pins((i+1) % 5 + 16); // + 16 to skip to the next multiplexer 
     }
     else
     {
-      set_multiplexer(i); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-      set_pins(i);
+      set_multiplexer(i+1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+      set_pins(i+1);
     }
-
 
     modifier_changed = false;
 
