@@ -214,7 +214,7 @@ void set_pins(const uint8_t value)
 // Sets the active multiplexer
 void set_multiplexer(const uint8_t value)
 {
-  static unsigned int active_mtp = 0;
+  static unsigned int active_mtp = 100;
 
   if (active_mtp == +value / 16u) // integer division
   {
@@ -226,14 +226,20 @@ void set_multiplexer(const uint8_t value)
     digitalWrite(MTP_BIN_PIN_6, !(1 == active_mtp));
     digitalWrite(MTP_BIN_PIN_7, !(2 == active_mtp));
   }
-/*
+ /* 
   Serial.print("Val : ");
   Serial.print(value);
   Serial.print("  ");
+
+  Serial.print(bool (value & (0b00000001)));
+  Serial.print(bool (value & (0b00000010)));
+  Serial.print(bool (value & (0b00000100)));
+  Serial.print(bool (value & (0b00001000)));
+
   Serial.print(0 == active_mtp);
   Serial.print(1 == active_mtp);
   Serial.println(2 == active_mtp);
-*/
+  */
 }
 
 void process_hid()
@@ -252,13 +258,13 @@ void process_hid()
 
     if ( i > 4 ) // temporary while doing silly things with 9 key keyboard
     {
-      set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
       set_multiplexer(i % 5 + 16);
+      set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
     }
     else
     {
+      set_multiplexer(i); // Set the multiplexer val first because it should be disabled before changing to the wrong key
       set_pins(i);
-      set_multiplexer(i);
     }
 
     keys[i].real = analogRead(ADC1);
