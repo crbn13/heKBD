@@ -123,16 +123,18 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 10;
+const int cycles = 100;
 
 void loop()
 {
+  Serial.println("im alive");
   start = micros(); // get time
 
   unsigned int inner_start = micros();
 
   for (int i = 0; i < cycles; i++)
   {
+    inner_start = micros();
 
 #ifdef TINYUSB_NEED_POLLING_TASK
     // Manual call tud_task since it isn't called by Core's background
@@ -148,7 +150,6 @@ void loop()
 
     process_hid();
     delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
-    inner_start = micros();
   }
   /*
   Serial.print(keys[0].real);
@@ -255,9 +256,6 @@ void process_hid()
   uint8_t count = 0;         // the number of keys being pressed
   uint8_t keycodes[6] = {0}; // array of 6 keys that are being pressed
   bool modifier_changed = false;
-  
-  set_pins(0);
-  set_multiplexer(0);
 
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
