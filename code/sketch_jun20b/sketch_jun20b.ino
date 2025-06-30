@@ -123,15 +123,18 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 300;
+const int cycles = 100;
 
 void loop()
 {
+  Serial.println("im alive");
   start = micros(); // get time
 
   unsigned int inner_start = micros();
+
   for (int i = 0; i < cycles; i++)
   {
+    inner_start = micros();
 
 #ifdef TINYUSB_NEED_POLLING_TASK
     // Manual call tud_task since it isn't called by Core's background
@@ -147,7 +150,6 @@ void loop()
 
     process_hid();
     delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
-    inner_start = micros();
   }
   /*
   Serial.print(keys[0].real);
@@ -189,6 +191,7 @@ void loop()
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
+
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -244,6 +247,15 @@ void set_multiplexer(const uint8_t value)
 
 void process_hid()
 {
+  static bool has_init_pins = false;
+
+  if (!has_init_pins)
+  {
+    set_pins(0);
+    set_multiplexer(0);
+    has_init_pins = true;
+    delay(1);
+  }
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
 
@@ -254,9 +266,9 @@ void process_hid()
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-    // Multiplexer code to set value would be here but it doesnt exist yet
+    keys[i].real = analogRead(ADC1); // reads analogue signal last
 
-    if ( i > 4 ) // temporary while doing silly things with 9 key keyboard
+    if ( i+1 > 4 ) // temporary while doing silly things with 9 key keyboard
     {
       set_multiplexer(i % 5 + 16);
       set_pins(i % 5 + 16); // + 16 to skip to the next multiplexer 
@@ -267,7 +279,6 @@ void process_hid()
       set_pins(i);
     }
 
-    keys[i].real = analogRead(ADC1);
 
     modifier_changed = false;
 
@@ -384,7 +395,10 @@ void process_hid()
 
     if (count > 5) // usb hid has a max report of 6 keys at a time :(
       break;       // break out of loop
-  }
+  } // For loop
+
+  set_pins(0); // Sets the values for the next loop 
+  set_multiplexer(0);
 
   if (TinyUSBDevice.suspended() && count)
   {
