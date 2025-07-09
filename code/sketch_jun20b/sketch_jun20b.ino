@@ -1,10 +1,11 @@
 #include "Adafruit_TinyUSB.h"
 // Number of keyboard keys
 #define KEY_COUNT 9
+#define FUNCTION_LAYERS 3
 
 // Analogue pins
 #define ADC1 A0
-#define ADC2 A1
+
 typedef uint8_t NORMALISED_ADC_VAL;
 #define MAX_NORMALISED_ADC_VAL 255
 
@@ -29,7 +30,25 @@ long end = 100; // just in case div0 happens
 float hz = 0;
 
 
+enum KeyTypes
+{
+  standard_actuation = 0,
+  rapid_trigger,
+  analog_joystick
+}
 
+struct key_values // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
+{
+  uint8_t keycode;        // the HID_KEY value of the specific switch
+  uint8_t key_type;   // the type of key that the key is  
+  uint8_t actuation_point; // the point at which the key achuates
+                           //
+                           //
+// ¬¬¬¬¬¬¬¬¬¬¬ Analoge stuff : 
+  uint8_t deadzone;
+  // need "joystick" value / identifier
+  // 
+}
 
 struct key {
   uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
@@ -38,7 +57,6 @@ struct key {
   float max_real;         // value from ADC analog to digital conversion
   float factor;           // a number to map the un normalised values to 0-255 num
   bool active_state;      // The state that was last sent over usb
-  uint8_t keycode;        // the HID_KEY value of the specific switch
   int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
 
   key()
@@ -48,7 +66,7 @@ struct key {
   }
 };
 
-key keys[KEY_COUNT];
+key keys[KEY_COUNT]; // initialize the array
 
 void setup()
 {
