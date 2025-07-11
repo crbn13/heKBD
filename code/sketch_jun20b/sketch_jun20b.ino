@@ -52,7 +52,7 @@ key keys[KEY_COUNT];
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(19200);
 
   if (!TinyUSBDevice.isInitialized())
   {
@@ -94,15 +94,15 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  keys[0].keycode = HID_KEY_A;
-  keys[1].keycode = HID_KEY_B;
-  keys[2].keycode = HID_KEY_C;
-  keys[3].keycode = HID_KEY_D;
-  keys[4].keycode = HID_KEY_E;
-  keys[5].keycode = HID_KEY_F;
-  keys[6].keycode = HID_KEY_G;
-  keys[7].keycode = HID_KEY_H;
-  keys[8].keycode = HID_KEY_I;
+  keys[0].keycode = HID_KEY_X;
+  keys[1].keycode = HID_KEY_C;
+  keys[2].keycode = HID_KEY_Y;
+  keys[3].keycode = HID_KEY_A;
+  keys[4].keycode = HID_KEY_S;
+  keys[5].keycode = HID_KEY_D;
+  keys[6].keycode = HID_KEY_Q;
+  keys[7].keycode = HID_KEY_W;
+  keys[8].keycode = HID_KEY_E;
 
   // need to actually make the custom keymap
 
@@ -148,7 +148,9 @@ void loop()
     // val = analogRead(ADC2);
 
     process_hid();
-    delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
+    int timeDifference = 1000 - micros() + inner_start;
+    if (timeDifference > 0)
+      delayMicroseconds(timeDifference); 
   }
   /*
   Serial.print(keys[0].real);
@@ -179,7 +181,6 @@ void loop()
   Serial.print(keys[1].active_state);
   Serial.print("  ");
   Serial.print(keys[1].has_value_changed);
-*/
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
@@ -187,9 +188,13 @@ void loop()
     Serial.print(i);
     Serial.print(" = ");
     Serial.print(keys[i].real);
+    Serial.print(" : ");
+    Serial.print(keys[i].normalised);
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
+*/
+
 
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
@@ -308,9 +313,12 @@ void process_hid()
 
     // rapid trigger is by standard :
 
-    const int bounds_checker = 10; // needs renaming, it accounts for the random
+    const int bounds_checker = 15; // needs renaming, it accounts for the random
                                    // variance in the analogue input
-    const int change_buffer = 2;
+                                  
+    const int top_bound = 5;
+    const int bottom_bound = 35; // The inaccuracy betwen the bottom of the strok and the top
+    const int change_buffer = 5;
 
     //  MOTHER OPTIMSATION
     // divide by the bounds checker and ignore the remainder which has the ish
@@ -331,7 +339,7 @@ void process_hid()
           keys[i].normalised < +previous - change_buffer &&
           keys[i].normalised <
               MAX_NORMALISED_ADC_VAL -
-                  bounds_checker) // check if direction of keystroke changed in
+                  bottom_bound) // check if direction of keystroke changed in
                                   // middle of stroke
       {
         keys[i].active_state = false;
@@ -339,7 +347,7 @@ void process_hid()
       }
       else if (
           keys[i].normalised >=
-          MAX_NORMALISED_ADC_VAL - bounds_checker) // if its at the 255 ranges
+          MAX_NORMALISED_ADC_VAL - bottom_bound) // if its at the 255 ranges
       {
         keycodes[count++] = keys[i].keycode;
 
@@ -356,12 +364,12 @@ void process_hid()
     else // if key not already pressed
     {
       if (keys[i].normalised > +previous + change_buffer &&
-          keys[i].normalised > bounds_checker) // check that it has moved enough
+          keys[i].normalised > top_bound) // check that it has moved enough
                                                // to achuate a press downwards
       {
         keys[i].has_value_changed = 0;
         keys[i].active_state = true;
-        keycodes[count++] = keys[i].keycode;
+        //keycodes[count++] = keys[i].keycode; This wont achuate till the next loop, because it could immediately go upwards
       } else if (keys[i].normalised > previous)  // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
       {
         keys[i].normalised = previous;
@@ -379,7 +387,7 @@ void process_hid()
       }
     }
 
-    if (keys[i].has_value_changed > 200)
+    if (keys[i].has_value_changed > 200 && !keys[i].active_state)
     {
       keys[i].min_real = keys[i].real;
       keys[i].has_value_changed = 0;
