@@ -1,4 +1,5 @@
-#include "Adafruit_TinyUSB.h"
+#include <Adafruit_TinyUSB.h>
+
 // Number of keyboard keys
 #define KEY_COUNT 9
 #define FUNCTION_LAYERS 3
@@ -25,32 +26,40 @@ uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
 // HID STUFF :
 Adafruit_USBD_HID usb_hid;
 
+// Gamepad stuff : 
+hid_gamepad_report_t gamepad;
+
 long start = 0;
 long end = 100; // just in case div0 happens
 float hz = 0;
 
-
-enum KeyTypes
+namespace KeyTypes
 {
-  standard_actuation = 0,
+enum
+{
+  standard_actuation ,
   rapid_trigger,
-  analog_joystick
-}
-
-struct key_values // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
+  analog_joystick,
+};
+};
+struct KeyValue // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
 {
-  uint8_t keycode;        // the HID_KEY value of the specific switch
-  uint8_t key_type;   // the type of key that the key is  
-  uint8_t actuation_point; // the point at which the key achuates
-                           //
-                           //
+  uint8_t keycode[FUNCTION_LAYERS];        // the HID_KEY value of the specific switch
+  uint8_t key_type[FUNCTION_LAYERS];   // the type of key that the key is  
+  uint8_t actuation_point; // the point at which the key achuates if its a standard_actuation key
+
 // ¬¬¬¬¬¬¬¬¬¬¬ Analoge stuff : 
   uint8_t deadzone;
   // need "joystick" value / identifier
-  // 
-}
+  int8_t* joystick_value; // pointer to gamepad struct member variable
+  int8_t joystick_direction; // the sign modifier which sets the direction that the joystick goes in 
+  
+  
+  // initializer 
+  KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20) {}
+};
 
-struct key {
+struct Key {
   uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
   uint16_t real;          // the value from ADC
   float min_real;         // minimum value read from ADC
@@ -59,18 +68,20 @@ struct key {
   bool active_state;      // The state that was last sent over usb
   int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
 
-  key()
+  Key()
       : normalised(0), real(0), min_real(MAX_ANALOG_VALUE),
-        max_real(MIN_ANALOG_VALUE), factor(0.0F), active_state(0), keycode(0)
+        max_real(MIN_ANALOG_VALUE), factor(0.0F), active_state(0), has_value_changed(0)
   {
   }
 };
 
-key keys[KEY_COUNT]; // initialize the array
+Key keys[KEY_COUNT]; // initialize the array
+KeyValue key_vals[KEY_COUNT]; 
 
 void setup()
 {
   Serial.begin(9600);
+  Serial.println("Im alive !");
 
   if (!TinyUSBDevice.isInitialized())
   {
@@ -112,15 +123,17 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  keys[0].keycode = HID_KEY_A;
-  keys[1].keycode = HID_KEY_B;
-  keys[2].keycode = HID_KEY_C;
-  keys[3].keycode = HID_KEY_D;
-  keys[4].keycode = HID_KEY_E;
-  keys[5].keycode = HID_KEY_F;
-  keys[6].keycode = HID_KEY_G;
-  keys[7].keycode = HID_KEY_H;
-  keys[8].keycode = HID_KEY_I;
+  key_vals[0].keycode[0] = HID_KEY_A;
+  key_vals[1].keycode[0] = HID_KEY_B;
+  key_vals[2].keycode[0] = HID_KEY_C;
+  
+  //key_vals[3].keycode[0] = HID_KEY_D;
+  key_vals[3].key_type[0] = KeyTypes::analog_joystick;
+  key_vals[4].keycode[0] = HID_KEY_E;
+  key_vals[5].keycode[0] = HID_KEY_F;
+  key_vals[6].keycode[0] = HID_KEY_G;
+  key_vals[7].keycode[0] = HID_KEY_H;
+  key_vals[8].keycode[0] = HID_KEY_I;
 
   // need to actually make the custom keymap
 
@@ -265,8 +278,9 @@ void set_multiplexer(const uint8_t value)
 void process_hid()
 {
 
-    set_pins(0);
-    set_multiplexer(0);
+  int active_layer = 0;
+  set_pins(0);
+  set_multiplexer(0);
 
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
@@ -324,9 +338,11 @@ void process_hid()
         MAX_NORMALISED_ADC_VAL) // no cheeky buffer overflows
       keys[i].normalised = MAX_NORMALISED_ADC_VAL;
 
-    // rapid trigger is by standard :
 
-    const int bounds_checker = 10; // needs renaming, it accounts for the random
+    switch (key_vals[i].key_type[active_layer]) {
+      case KeyTypes::rapid_trigger:
+      {
+const int bounds_checker = 10; // needs renaming, it accounts for the random
                                    // variance in the analogue input
     const int change_buffer = 2;
 
@@ -353,21 +369,21 @@ void process_hid()
                                   // middle of stroke
       {
         keys[i].active_state = false;
-        keycodes[count++] = keys[i].keycode;
+        keycodes[count++] = key_vals[i].keycode[active_layer];
       }
       else if (
           keys[i].normalised >=
           MAX_NORMALISED_ADC_VAL - bounds_checker) // if its at the 255 ranges
       {
-        keycodes[count++] = keys[i].keycode;
+        keycodes[count++] = key_vals[i].keycode[active_layer];
 
       } else if (keys[i].normalised > previous)  // check if key travelling downwards
       {
-        keycodes[count++] = keys[i].keycode;
+        keycodes[count++] = key_vals[i].keycode[active_layer];
       }
       else // if neither then set value to previous and switch still pressed
       {
-        keycodes[count++] = keys[i].keycode;
+        keycodes[count++] = key_vals[i].keycode[active_layer];
         keys[i].normalised = previous;
       }
     }
@@ -379,7 +395,7 @@ void process_hid()
       {
         keys[i].has_value_changed = 0;
         keys[i].active_state = true;
-        keycodes[count++] = keys[i].keycode;
+        keycodes[count++] = key_vals[i].keycode[active_layer];
       } else if (keys[i].normalised > previous)  // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
       {
         keys[i].normalised = previous;
@@ -396,6 +412,22 @@ void process_hid()
         }
       }
     }
+      }
+      case KeyTypes::standard_actuation:
+      {
+        if (keys[i].normalised > 100)
+        {
+          keycodes[count++] = key_vals[i].keycode[active_layer];
+        }
+      }
+      case KeyTypes::analog_joystick:
+      {
+        gamepad.x = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
+      }
+    
+    }
+
+    
 
     if (keys[i].has_value_changed > 200)
     {
@@ -421,7 +453,10 @@ void process_hid()
   // skip if hid is not ready e.g still transferring previous report
   if (!usb_hid.ready())
     return;
-
+  
+  // usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
+  // delay(1);
+ghiefeeefffeeeeeeeeeefaaaaaaaaaaaabbbccc
   if (count)
   {
     // Send report if there is key pressed
