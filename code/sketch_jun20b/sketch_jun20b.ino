@@ -21,7 +21,8 @@ typedef uint8_t NORMALISED_ADC_VAL;
 #define MTP_BIN_PIN_6 D5
 #define MTP_BIN_PIN_7 D6
 
-uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
+//uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
+uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_GAMEPAD()};
 
 // HID STUFF :
 Adafruit_USBD_HID usb_hid;
@@ -56,7 +57,7 @@ struct KeyValue // stores the keycodes and more of each switch, each element of 
   
   
   // initializer 
-  KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20) {}
+  KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20), joystick_direction(1), joystick_value(std::nullptr_t()) {}
 };
 
 struct Key {
@@ -89,13 +90,14 @@ void setup()
   }
 
   // Setup HID
-  usb_hid.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
-  usb_hid.setPollInterval(1);
+  //usb_hid.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
+  
+  usb_hid.setPollInterval(2);
   usb_hid.setReportDescriptor(desc_hid_report, sizeof(desc_hid_report));
-  usb_hid.setStringDescriptor("TinyUSB Keyboard");
+  //usb_hid.setStringDescriptor("TinyUSB Keyboard");
 
   // Set up output report (on control endpoint) for Capslock indicator
-  usb_hid.setReportCallback(NULL, hid_report_callback);
+  //usb_hid.setReportCallback(NULL, hid_report_callback);
 
   usb_hid.begin();
 
@@ -123,17 +125,21 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  key_vals[0].keycode[0] = HID_KEY_A;
-  key_vals[1].keycode[0] = HID_KEY_B;
-  key_vals[2].keycode[0] = HID_KEY_C;
+  key_vals[0].keycode[0] = HID_KEY_X;
+  key_vals[1].keycode[0] = HID_KEY_C;
+  key_vals[2].keycode[0] = HID_KEY_Y;
   
   //key_vals[3].keycode[0] = HID_KEY_D;
   key_vals[3].key_type[0] = KeyTypes::analog_joystick;
-  key_vals[4].keycode[0] = HID_KEY_E;
-  key_vals[5].keycode[0] = HID_KEY_F;
-  key_vals[6].keycode[0] = HID_KEY_G;
-  key_vals[7].keycode[0] = HID_KEY_H;
-  key_vals[8].keycode[0] = HID_KEY_I;
+  key_vals[3].joystick_direction = -1;
+  key_vals[3].joystick_value = &gamepad.x;
+  //key_vals[3].
+
+  key_vals[4].keycode[0] = HID_KEY_S;
+  key_vals[5].keycode[0] = HID_KEY_D;
+  key_vals[6].keycode[0] = HID_KEY_Q;
+  key_vals[7].keycode[0] = HID_KEY_W;
+  key_vals[8].keycode[0] = HID_KEY_R;
 
   // need to actually make the custom keymap
 
@@ -151,10 +157,24 @@ void setup()
   }
   // need to implement them being saved ofc
 
+  while (!usb_hid.ready()) {delay(1);};
+
+  // Reset buttons
+  Serial.println("No pressing buttons");
+  gamepad.x = 0;
+  gamepad.y = 0;
+  gamepad.z = 0;
+  gamepad.rz = 0;
+  gamepad.rx = 0;
+  gamepad.ry = 0;
+  gamepad.hat = 0;
+  gamepad.buttons = 0;
+  usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
+
 }  // end of setup
 
 
-const int cycles = 100;
+const int cycles = 1000;
 
 void loop()
 {
@@ -177,9 +197,10 @@ void loop()
     }
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
+    if(!usb_hid.ready());
 
     process_hid();
-    delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
+    delayMicroseconds(2000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
   }
   /*
   Serial.print(keys[0].real);
@@ -217,7 +238,7 @@ void loop()
     Serial.print(" | Pin ");
     Serial.print(i);
     Serial.print(" = ");
-    Serial.print(keys[i].real);
+    Serial.print(keys[i].normalised);
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
@@ -277,6 +298,7 @@ void set_multiplexer(const uint8_t value)
 
 void process_hid()
 {
+
 
   int active_layer = 0;
   set_pins(0);
@@ -412,6 +434,7 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
         }
       }
     }
+    break;
       }
       case KeyTypes::standard_actuation:
       {
@@ -419,15 +442,24 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
         {
           keycodes[count++] = key_vals[i].keycode[active_layer];
         }
+        break;
       }
       case KeyTypes::analog_joystick:
       {
         gamepad.x = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
+        //Serial.println(int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction);
+        gamepad.y=0;
+
+
+      
+      break;
+      }
+      default:
+      {
+        //nuffin to do here
       }
     
     }
-
-    
 
     if (keys[i].has_value_changed > 200)
     {
@@ -456,7 +488,12 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
   
   // usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
   // delay(1);
-ghiefeeefffeeeeeeeeeefaaaaaaaaaaaabbbccc
+              // super temporary silly code
+  usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
+      // super temporary silly code
+  // usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
+  
+  /*
   if (count)
   {
     // Send report if there is key pressed
@@ -476,7 +513,9 @@ ghiefeeefffeeeeeeeeeefaaaaaaaaaaaabbbccc
       keyPressedPreviously = false;
       usb_hid.keyboardRelease(0);
     }
+
   }
+  */
 }
 
 // Output report callback for LED indicator such as Caplocks
