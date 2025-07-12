@@ -178,8 +178,7 @@ const int cycles = 1000;
 void loop()
 {
   start = micros(); // get time
-  delay(1000);
-  Serial.println("IM ALIVEEEE");
+
   unsigned int inner_start = micros();
 
   for (int i = 0; i < cycles; i++)
@@ -197,7 +196,7 @@ void loop()
     }
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
-    while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
+    //while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
     process_hid();
 
@@ -307,7 +306,8 @@ void process_hid()
 
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
-  static bool controller_input = false;
+  static bool controller_input_previously = false;
+  bool controller_input = false;
 
   uint8_t count = 0;         // the number of keys being pressed
   uint8_t keycodes[6] = {0}; // array of 6 keys that are being pressed
@@ -490,17 +490,25 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
   if (controller_input)
   {
     usb_controller.sendReport(0, &gamepad, sizeof(gamepad));
-    gamepad.x = 0;
-    gamepad.y = 0;
-    gamepad.z = 0;
-    gamepad.rz = 0;
-    gamepad.rx = 0;
-    gamepad.ry = 0;
-    gamepad.hat = 0;
-    gamepad.buttons = 0;
     controller_input = false;
+    controller_input_previously = true;
   }
-
+  else
+  {
+    if (controller_input_previously)
+      {
+        usb_controller.sendReport(0, &gamepad, sizeof(gamepad));
+        controller_input_previously = false; 
+      }
+  }
+  gamepad.x = 0;
+  gamepad.y = 0;
+  gamepad.z = 0;
+  gamepad.rz = 0;
+  gamepad.rx = 0;
+  gamepad.ry = 0;
+  gamepad.hat = 0;
+  gamepad.buttons = 0;
 
   if (count)
   {
