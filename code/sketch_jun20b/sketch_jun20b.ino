@@ -136,7 +136,12 @@ void setup()
   //key_vals[3].
 
   key_vals[4].keycode[0] = HID_KEY_S;
-  key_vals[5].keycode[0] = HID_KEY_D;
+  
+  // key_vals[5].keycode[0] = HID_KEY_D;
+  key_vals[5].key_type[0] = KeyTypes::analog_joystick;
+  key_vals[5].joystick_direction = 1;
+  key_vals[5].joystick_value = &gamepad.x;
+
   key_vals[6].keycode[0] = HID_KEY_Q;
   key_vals[7].keycode[0] = HID_KEY_W;
   key_vals[8].keycode[0] = HID_KEY_R;
@@ -156,20 +161,6 @@ void setup()
     keys[i].min_real = keys[i].real;  // set the min value to the value at startup
   }
   // need to implement them being saved ofc
-
-  while (!usb_hid.ready()) {delay(1);};
-
-  // Reset buttons
-  Serial.println("No pressing buttons");
-  gamepad.x = 0;
-  gamepad.y = 0;
-  gamepad.z = 0;
-  gamepad.rz = 0;
-  gamepad.rx = 0;
-  gamepad.ry = 0;
-  gamepad.hat = 0;
-  gamepad.buttons = 0;
-  usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
 
 }  // end of setup
 
@@ -446,12 +437,11 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
       }
       case KeyTypes::analog_joystick:
       {
-        gamepad.x = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
+        if ( int8_t(keys[i].normalised >> 1) >= abs(*key_vals[i].joystick_value) )
+          *key_vals[i].joystick_value = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
+
         //Serial.println(int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction);
-        gamepad.y=0;
 
-
-      
       break;
       }
       default:
@@ -486,13 +476,20 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
   if (!usb_hid.ready())
     return;
   
-  // usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
-  // delay(1);
+
               // super temporary silly code
   usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
-      // super temporary silly code
-  // usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
   
+  gamepad.x = 0;
+  gamepad.y = 0;
+  gamepad.z = 0;
+  gamepad.rz = 0;
+  gamepad.rx = 0;
+  gamepad.ry = 0;
+  gamepad.hat = 0;
+  gamepad.buttons = 0;
+
+
   /*
   if (count)
   {
