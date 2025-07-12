@@ -21,11 +21,13 @@ typedef uint8_t NORMALISED_ADC_VAL;
 #define MTP_BIN_PIN_6 D5
 #define MTP_BIN_PIN_7 D6
 
-//uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
-uint8_t const desc_hid_report[] = {TUD_HID_REPORT_DESC_GAMEPAD()};
+uint8_t const desc_hid_report_keyboard[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
+uint8_t const desc_hid_report_controller[] = {TUD_HID_REPORT_DESC_GAMEPAD()};
 
 // HID STUFF :
-Adafruit_USBD_HID usb_hid;
+Adafruit_USBD_HID usb_keyboard;
+Adafruit_USBD_HID usb_controller;
+//Adafruit_USBD_HID usb_mouse;
 
 // Gamepad stuff : 
 hid_gamepad_report_t gamepad;
@@ -89,17 +91,23 @@ void setup()
     TinyUSBDevice.begin(0);
   }
 
-  // Setup HID
-  //usb_hid.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
-  
-  usb_hid.setPollInterval(2);
-  usb_hid.setReportDescriptor(desc_hid_report, sizeof(desc_hid_report));
-  //usb_hid.setStringDescriptor("TinyUSB Keyboard");
 
+  // Setup KEYBOARD
+  // usb_keyboard.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
+  usb_keyboard.setPollInterval(1);
+  usb_keyboard.setReportDescriptor(desc_hid_report_keyboard, sizeof(desc_hid_report_keyboard));
+  usb_keyboard.setStringDescriptor("tinyUSB Keyboard");
   // Set up output report (on control endpoint) for Capslock indicator
-  //usb_hid.setReportCallback(NULL, hid_report_callback);
+  usb_keyboard.setReportCallback(NULL, hid_report_callback);
+  usb_keyboard.begin();
 
-  usb_hid.begin();
+  // Setup Controller
+
+  usb_controller.setPollInterval(1);
+  usb_controller.setReportDescriptor(desc_hid_report_controller, sizeof(desc_hid_report_controller));
+  usb_controller.setStringDescriptor("tinyUSB Controller");
+  usb_controller.begin();
+
 
   // If already enumerated, additional class driverr begin() e.g msc, hid, midi won't take effect until re-enumeration
   if (TinyUSBDevice.mounted()) {
@@ -170,7 +178,8 @@ const int cycles = 1000;
 void loop()
 {
   start = micros(); // get time
-
+  delay(1000);
+  Serial.println("IM ALIVEEEE");
   unsigned int inner_start = micros();
 
   for (int i = 0; i < cycles; i++)
@@ -188,10 +197,11 @@ void loop()
     }
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
-    if(!usb_hid.ready());
+    while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
     process_hid();
-    delayMicroseconds(2000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
+
+    delayMicroseconds(1000 - micros() + inner_start ); // This might break if the delay is greater than 1000 us but oh well 
   }
   /*
   Serial.print(keys[0].real);
@@ -297,6 +307,7 @@ void process_hid()
 
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
+  static bool controller_input = false;
 
   uint8_t count = 0;         // the number of keys being pressed
   uint8_t keycodes[6] = {0}; // array of 6 keys that are being pressed
@@ -438,10 +449,10 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
       case KeyTypes::analog_joystick:
       {
         if ( int8_t(keys[i].normalised >> 1) >= abs(*key_vals[i].joystick_value) )
+        {
           *key_vals[i].joystick_value = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
-
-        //Serial.println(int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction);
-
+          controller_input = true;
+        }
       break;
       }
       default:
@@ -473,24 +484,24 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
   }
 
   // skip if hid is not ready e.g still transferring previous report
-  if (!usb_hid.ready())
-    return;
+
   
 
-              // super temporary silly code
-  usb_hid.sendReport(0, &gamepad, sizeof(gamepad));
-  
-  gamepad.x = 0;
-  gamepad.y = 0;
-  gamepad.z = 0;
-  gamepad.rz = 0;
-  gamepad.rx = 0;
-  gamepad.ry = 0;
-  gamepad.hat = 0;
-  gamepad.buttons = 0;
+  if (controller_input)
+  {
+    usb_controller.sendReport(0, &gamepad, sizeof(gamepad));
+    gamepad.x = 0;
+    gamepad.y = 0;
+    gamepad.z = 0;
+    gamepad.rz = 0;
+    gamepad.rx = 0;
+    gamepad.ry = 0;
+    gamepad.hat = 0;
+    gamepad.buttons = 0;
+    controller_input = false;
+  }
 
 
-  /*
   if (count)
   {
     // Send report if there is key pressed
@@ -498,7 +509,7 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
     uint8_t const modifier = 0;  // modifier keys stored in array of 1 bit numbers
 
     keyPressedPreviously = true;
-    usb_hid.keyboardReport(report_id, modifier, keycodes);
+    usb_keyboard.keyboardReport(report_id, modifier, keycodes);
   }
   else
   {
@@ -508,11 +519,10 @@ const int bounds_checker = 10; // needs renaming, it accounts for the random
     if (keyPressedPreviously)
     {
       keyPressedPreviously = false;
-      usb_hid.keyboardRelease(0);
+      usb_keyboard.keyboardRelease(0);
     }
 
   }
-  */
 }
 
 // Output report callback for LED indicator such as Caplocks
