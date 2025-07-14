@@ -1,10 +1,11 @@
 #include "Adafruit_TinyUSB.h"
 // Number of keyboard keys
-#define KEY_COUNT 9
+#define KEY_COUNT 2
 
 // Analogue pins
 #define ADC1 A0
 #define ADC2 A1
+
 typedef uint8_t NORMALISED_ADC_VAL;
 #define MAX_NORMALISED_ADC_VAL 255
 
@@ -94,15 +95,8 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  keys[0].keycode = HID_KEY_X;
-  keys[1].keycode = HID_KEY_C;
-  keys[2].keycode = HID_KEY_Y;
-  keys[3].keycode = HID_KEY_A;
-  keys[4].keycode = HID_KEY_S;
-  keys[5].keycode = HID_KEY_D;
-  keys[6].keycode = HID_KEY_Q;
-  keys[7].keycode = HID_KEY_W;
-  keys[8].keycode = HID_KEY_E;
+  keys[0].keycode = HID_KEY_D;
+  keys[1].keycode = HID_KEY_F;
 
   // need to actually make the custom keymap
 
@@ -113,11 +107,6 @@ void setup()
 
   //analogReadResolution(12);
 
-  // Set min vals :
-  for (int i = 0; i < KEY_COUNT; i++) {
-    keys[i].real = analogRead(ADC1);
-    keys[i].min_real = keys[i].real;  // set the min value to the value at startup
-  }
   // need to implement them being saved ofc
 
 }  // end of setup
@@ -252,8 +241,8 @@ void set_multiplexer(const uint8_t value)
 void process_hid()
 {
 
-    set_pins(0);
-    set_multiplexer(0);
+  //set_pins(0);
+  //set_multiplexer(0);
 
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously = false;
@@ -265,8 +254,16 @@ void process_hid()
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-    keys[i].real = analogRead(ADC1); // reads analogue signal last
+    if (i==0)
+    {
+      keys[i].real = analogRead(ADC1); // reads analogue signal last
+    }
+    else 
+    {
+      keys[i].real = analogRead(ADC2);
+    }
 
+    /*
     if ( i+1 > 4 ) // temporary while doing silly things with 9 key keyboard
     {
       set_multiplexer((i+1) % 5 + 16);
@@ -277,6 +274,7 @@ void process_hid()
       set_multiplexer(i+1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
       set_pins(i+1);
     }
+    */
 
     modifier_changed = false;
 
@@ -398,8 +396,8 @@ void process_hid()
       break;       // break out of loop
   } // For loop
 
-  set_pins(0); // Sets the values for the next loop 
-  set_multiplexer(0);
+  //set_pins(0); // Sets the values for the next loop 
+  //set_multiplexer(0);
 
   if (TinyUSBDevice.suspended() && count)
   {
