@@ -1,7 +1,10 @@
-Add rest of keys for the 1st multiplexer to the code but leave all of the pins empty for software testing
 
 finish the code
 
 Filesystem for keymap and settings
 File parser to get keymap
 keymap.old file saving
+
+Analogue input :
+  create class to easily add analogue pins ? 
+  Portion up files ? actually organise some code god forbid

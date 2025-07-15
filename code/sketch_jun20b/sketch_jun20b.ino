@@ -132,16 +132,27 @@ void setup()
   pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  keys[0].keycode = HID_KEY_X;
-  keys[1].keycode = HID_KEY_C;
-  keys[2].keycode = HID_KEY_Y;
-  keys[3].keycode = HID_KEY_A;
-  keys[4].keycode = HID_KEY_S;
-  keys[5].keycode = HID_KEY_D;
-  keys[6].keycode = HID_KEY_Q;
-  keys[7].keycode = HID_KEY_W;
-  keys[8].keycode = HID_KEY_E;
+  // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  key_vals[0].keycode[0] = HID_KEY_X;
+  key_vals[1].keycode[0] = HID_KEY_C;
+  key_vals[2].keycode[0] = HID_KEY_Y;
+  
+  //key_vals[3].keycode[0] = HID_KEY_D;
+  key_vals[3].key_type[0] = KeyTypes::analog_joystick;
+  key_vals[3].joystick_direction = -1;
+  key_vals[3].joystick_value = &gamepad.x;
+  //key_vals[3].
 
+  key_vals[4].keycode[0] = HID_KEY_S;
+  
+  // key_vals[5].keycode[0] = HID_KEY_D;
+  key_vals[5].key_type[0] = KeyTypes::analog_joystick;
+  key_vals[5].joystick_direction = 1;
+  key_vals[5].joystick_value = &gamepad.x;
+
+  key_vals[6].keycode[0] = HID_KEY_Q;
+  key_vals[7].keycode[0] = HID_KEY_W;
+  key_vals[8].keycode[0] = HID_KEY_R;
   // need to actually make the custom keymap
 
   // for ( int i = 0 ; i < KEY_COUNT ; i++)
