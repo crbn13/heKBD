@@ -1,25 +1,18 @@
+// Stuff to change : 
+
+#include "config.hpp"
+
+
+
+
 #include <Adafruit_TinyUSB.h>
 
-// Number of keyboard keys
-#define KEY_COUNT 9
-#define FUNCTION_LAYERS 3
+#include "key.hpp"
+#include "multiplexer.hpp"
+#include "keymap.hpp"
 
-// Analogue pins
-#define ADC1 A0
 
-typedef uint8_t NORMALISED_ADC_VAL;
-#define MAX_NORMALISED_ADC_VAL 255
 
-#define MAX_ANALOG_VALUE 4096
-#define MIN_ANALOG_VALUE 0
-
-#define MTP_BIN_PIN_1 D0 // These directly controll each multiplexer
-#define MTP_BIN_PIN_2 D1
-#define MTP_BIN_PIN_3 D2
-#define MTP_BIN_PIN_4 D3
-#define MTP_BIN_PIN_5 D4 // These enable the multiplexer disable pins
-#define MTP_BIN_PIN_6 D5
-#define MTP_BIN_PIN_7 D6
 
 uint8_t const desc_hid_report_keyboard[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
 uint8_t const desc_hid_report_controller[] = {TUD_HID_REPORT_DESC_GAMEPAD()};
@@ -32,51 +25,10 @@ Adafruit_USBD_HID usb_controller;
 // Gamepad stuff : 
 hid_gamepad_report_t gamepad;
 
+// HZ controll stuff 
 long start = 0;
 long end = 100; // just in case div0 happens
 float hz = 0;
-
-namespace KeyTypes
-{
-enum
-{
-  standard_actuation ,
-  rapid_trigger,
-  analog_joystick,
-};
-};
-struct KeyValue // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
-{
-  uint8_t keycode[FUNCTION_LAYERS];        // the HID_KEY value of the specific switch
-  uint8_t key_type[FUNCTION_LAYERS];   // the type of key that the key is  
-  uint8_t actuation_point; // the point at which the key achuates if its a standard_actuation key
-
-// ¬¬¬¬¬¬¬¬¬¬¬ Analoge stuff : 
-  uint8_t deadzone;
-  // need "joystick" value / identifier
-  int8_t* joystick_value; // pointer to gamepad struct member variable
-  int8_t joystick_direction; // the sign modifier which sets the direction that the joystick goes in 
-  
-  
-  // initializer 
-  KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20), joystick_direction(1), joystick_value(std::nullptr_t()) {}
-};
-
-struct Key {
-  uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
-  uint16_t real;          // the value from ADC
-  float min_real;         // minimum value read from ADC
-  float max_real;         // value from ADC analog to digital conversion
-  float factor;           // a number to map the un normalised values to 0-255 num
-  bool active_state;      // The state that was last sent over usb
-  int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
-
-  Key()
-      : normalised(0), real(0), min_real(MAX_ANALOG_VALUE),
-        max_real(MIN_ANALOG_VALUE), factor(0.0F), active_state(0), has_value_changed(0)
-  {
-  }
-};
 
 Key keys[KEY_COUNT]; // initialize the array
 KeyValue key_vals[KEY_COUNT]; 
@@ -123,13 +75,6 @@ void setup()
 
   // set binary multiplexer output pins
 
-  pinMode(MTP_BIN_PIN_1, OUTPUT);
-  pinMode(MTP_BIN_PIN_2, OUTPUT);
-  pinMode(MTP_BIN_PIN_3, OUTPUT);
-  pinMode(MTP_BIN_PIN_4, OUTPUT);
-  pinMode(MTP_BIN_PIN_5, OUTPUT);
-  pinMode(MTP_BIN_PIN_6, OUTPUT);
-  pinMode(MTP_BIN_PIN_7, OUTPUT);
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -256,47 +201,6 @@ void loop()
 
   // Serial.print("\t| HZ = ");
   // Serial.println(hz);
-}
-
-// Sets the 4 channel digital output to controll active multiplexer
-void set_pins(const uint8_t value)
-{
-  // Set direct multiplexer controll pins
-  digitalWrite(MTP_BIN_PIN_1, bool(value & (0b00000001)));
-  digitalWrite(MTP_BIN_PIN_2, bool(value & (0b00000010)));
-  digitalWrite(MTP_BIN_PIN_3, bool(value & (0b00000100)));
-  digitalWrite(MTP_BIN_PIN_4, bool(value & (0b00001000)));
-}
-
-// Sets the active multiplexer
-void set_multiplexer(const uint8_t value)
-{
-  static unsigned int active_mtp = 100;
-
-  if (active_mtp == +value / 16u) // integer division
-  {
-  }
-  else
-  {
-    active_mtp = +value/16u;
-    digitalWrite(MTP_BIN_PIN_5, !(0 == active_mtp));
-    digitalWrite(MTP_BIN_PIN_6, !(1 == active_mtp));
-    digitalWrite(MTP_BIN_PIN_7, !(2 == active_mtp));
-  }
- /* 
-  Serial.print("Val : ");
-  Serial.print(value);
-  Serial.print("  ");
-
-  Serial.print(bool (value & (0b00000001)));
-  Serial.print(bool (value & (0b00000010)));
-  Serial.print(bool (value & (0b00000100)));
-  Serial.print(bool (value & (0b00001000)));
-
-  Serial.print(0 == active_mtp);
-  Serial.print(1 == active_mtp);
-  Serial.println(2 == active_mtp);
-  */
 }
 
 void process_hid()
