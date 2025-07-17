@@ -1,16 +1,13 @@
-// Stuff to change : 
-
+// Stuff to configure : ~~~~~~
 #include "config.hpp"
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
+#include "Arduino.h"
 
 #include <Adafruit_TinyUSB.h>
 
 #include "key.hpp"
 #include "multiplexer.hpp"
-
-
 
 
 uint8_t const desc_hid_report_keyboard[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
@@ -204,8 +201,6 @@ void loop()
 
 void process_hid()
 {
-
-
   int active_layer = 0;
   set_pins(0);
   set_multiplexer(0);

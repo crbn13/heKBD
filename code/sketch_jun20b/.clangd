@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [ -I/home/rory/.arduino15/packages/rp2040/hardware/rp2040/4.6.0/cores/rp2040/, -I/home/rory/.arduino15/packages/rp2040/hardware/rp2040/4.6.0/ ]

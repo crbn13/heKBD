@@ -5,6 +5,7 @@
 #define KEY_COUNT 9
 #define FUNCTION_LAYERS 3
 
+#define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
 
 // Analogue pins : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #define ADC1 A0
@@ -24,7 +25,6 @@ typedef uint8_t NORMALISED_ADC_VAL;
 #define MTP_BIN_PIN_3 D2
 #define MTP_BIN_PIN_4 D3
 
-#define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
                                            
 // Each analog multiplexer controlled by direct digital pin
 #ifdef DIRECT_MULTIPLEXER_PIN_ENABLE_MODE 
