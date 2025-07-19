@@ -46,4 +46,8 @@ struct Key {
   }
 };
 
+
+extern Key keys[KEY_COUNT]; // initialize the array
+extern KeyValue key_vals[KEY_COUNT]; 
+
 #endif // Include Guard

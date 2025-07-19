@@ -7,6 +7,7 @@
 #include "usb_hid.hpp"
 #include "key.hpp"
 #include "multiplexer.hpp"
+#include "keystate_parser.hpp"
 
 
 
@@ -15,8 +16,6 @@ long start = 0;
 long end = 100; // just in case div0 happens
 float hz = 0;
 
-Key keys[KEY_COUNT]; // initialize the array
-KeyValue key_vals[KEY_COUNT]; 
 
 void setup()
 {

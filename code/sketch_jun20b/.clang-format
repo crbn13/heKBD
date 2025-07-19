@@ -1,2 +1,11 @@
 ---
+BasedOnStyle: WebKit
+Language: Cpp
+IndentWidth: 2
 BreakBeforeBraces: Allman
+AlignConsecutiveAssignments: Consecutive
+ColumnLimit: 500
+
+ReflowComments: false
+PenaltyBreakComment: 100000
+

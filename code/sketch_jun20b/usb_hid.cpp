@@ -43,7 +43,7 @@ void setup_usb()
 // Sends Usb report for gamepad
 void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report)
 {
-    hid.sendReport(0, &gamepad, sizeof(gamepad));
+    hid->sendReport(0, &gamepad, sizeof(gamepad));
 
     
     // reset gamepad input
@@ -58,7 +58,7 @@ void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report)
 }
 
 // Sends Usb report for keyboard 
-void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count);
+void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count)
 {
   static bool keyPressedPreviously = false;
 
@@ -69,7 +69,7 @@ void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t
     uint8_t const modifier = 0;  // modifier keys stored in array of 1 bit numbers
 
     keyPressedPreviously = true;
-    hid.keyboardReport(report_id, modifier, keyboard_report);
+    hid->keyboardReport(report_id, modifier, keyboard_report);
   }
   else
   {
@@ -79,7 +79,7 @@ void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t
     if (keyPressedPreviously)
     {
       keyPressedPreviously = false;
-      hid.keyboardRelease(0);
+      hid->keyboardRelease(0);
     }
 
   }
