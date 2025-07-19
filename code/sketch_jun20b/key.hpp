@@ -1,3 +1,6 @@
+#ifndef GUARD_KEY_HPP
+#define GUARD_KEY_HPP
+
 #include "config.hpp"
 
 
@@ -43,3 +46,4 @@ struct Key {
   }
 };
 
+#endif // Include Guard

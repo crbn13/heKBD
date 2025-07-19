@@ -1,3 +1,7 @@
+#ifndef GUARD_CONFIG_HPP
+#define GUARD_CONFIG_HPP
+
+#include <cstdio>
 #include <Arduino.h>
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
@@ -46,3 +50,5 @@ typedef uint8_t NORMALISED_ADC_VAL;
 #define MTP_CONTROLL_BIN_4 D7
 
 #endif
+
+#endif // include guard

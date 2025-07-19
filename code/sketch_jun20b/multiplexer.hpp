@@ -1,3 +1,6 @@
+#ifndef GUARD_MULTIPLEXER_HPP
+#define GUARD_MULTIPLEXER_HPP
+
 #include "config.hpp"
 
 #include <cstdint>
@@ -9,3 +12,5 @@ void set_multiplexer(const uint8_t value);
 
 // sets up digital input and output pins
 void setup_pins(); 
+
+#endif // Include Guard
