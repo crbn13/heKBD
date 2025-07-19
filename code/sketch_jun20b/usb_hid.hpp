@@ -18,6 +18,10 @@ extern hid_gamepad_report_t gamepad;
 
 void setup_usb();
 
+void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report);
+
+void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count);
+
 // Output report callback for LED indicator such as Caplocks
 void hid_report_callback(uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize);
 

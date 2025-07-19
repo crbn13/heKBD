@@ -40,6 +40,51 @@ void setup_usb()
     TinyUSBDevice.attach();
   }
 }
+// Sends Usb report for gamepad
+void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report)
+{
+    hid.sendReport(0, &gamepad, sizeof(gamepad));
+
+    
+    // reset gamepad input
+  gamepad.x = 0;
+  gamepad.y = 0;
+  gamepad.z = 0;
+  gamepad.rz = 0;
+  gamepad.rx = 0;
+  gamepad.ry = 0;
+  gamepad.hat = 0;
+  gamepad.buttons = 0;
+}
+
+// Sends Usb report for keyboard 
+void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count);
+{
+  static bool keyPressedPreviously = false;
+
+  if (count)
+  {
+    // Send report if there is key pressed
+    uint8_t const report_id = 0;
+    uint8_t const modifier = 0;  // modifier keys stored in array of 1 bit numbers
+
+    keyPressedPreviously = true;
+    hid.keyboardReport(report_id, modifier, keyboard_report);
+  }
+  else
+  {
+    // Send All-zero report to indicate there is no keys pressed
+    // Most of the time, it is, though we don't need to send zero report
+    // every loop(), only a key is pressed in previous loop()
+    if (keyPressedPreviously)
+    {
+      keyPressedPreviously = false;
+      hid.keyboardRelease(0);
+    }
+
+  }
+
+}
 
 void hid_report_callback(
     uint8_t report_id,
@@ -63,3 +108,4 @@ void hid_report_callback(
   digitalWrite(LED_BUILTIN, ledIndicator & KEYBOARD_LED_CAPSLOCK);
 #endif
 }
+
