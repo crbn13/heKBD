@@ -8,10 +8,13 @@ namespace KeyTypes
 {
 enum
 {
-  standard_actuation ,
+  standard_actuation,
   rapid_trigger,
   analog_joystick,
+  modifier_key,
+  unassigned,
 };
+
 };
 struct KeyValue // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
 {
@@ -45,7 +48,6 @@ struct Key {
   {
   }
 };
-
 
 extern Key keys[KEY_COUNT]; // initialize the array
 extern KeyValue key_vals[KEY_COUNT]; 

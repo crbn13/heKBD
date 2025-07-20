@@ -1,7 +1,7 @@
 #include "usb_hid.hpp"
 
-uint8_t const desc_hid_report_keyboard[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
-uint8_t const desc_hid_report_controller[] = {TUD_HID_REPORT_DESC_GAMEPAD()};
+uint8_t const desc_hid_report_keyboard[]   = { TUD_HID_REPORT_DESC_KEYBOARD() };
+uint8_t const desc_hid_report_controller[] = { TUD_HID_REPORT_DESC_GAMEPAD() };
 
 Adafruit_USBD_HID usb_keyboard;
 Adafruit_USBD_HID usb_controller;
@@ -14,7 +14,6 @@ void setup_usb()
   {
     TinyUSBDevice.begin(0);
   }
-
 
   // Setup KEYBOARD
   // usb_keyboard.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
@@ -32,33 +31,32 @@ void setup_usb()
   usb_controller.setStringDescriptor("tinyUSB Controller");
   usb_controller.begin();
 
-
   // If already enumerated, additional class driverr begin() e.g msc, hid, midi won't take effect until re-enumeration
-  if (TinyUSBDevice.mounted()) {
+  if (TinyUSBDevice.mounted())
+  {
     TinyUSBDevice.detach();
     delay(10);
     TinyUSBDevice.attach();
   }
 }
 // Sends Usb report for gamepad
-void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report)
+void send_usb_report(Adafruit_USBD_HID* hid, hid_gamepad_report_t* report)
 {
-    hid->sendReport(0, &gamepad, sizeof(gamepad));
+  hid->sendReport(0, &gamepad, sizeof(gamepad));
 
-    
-    // reset gamepad input
-  gamepad.x = 0;
-  gamepad.y = 0;
-  gamepad.z = 0;
-  gamepad.rz = 0;
-  gamepad.rx = 0;
-  gamepad.ry = 0;
-  gamepad.hat = 0;
+  // reset gamepad input
+  gamepad.x       = 0;
+  gamepad.y       = 0;
+  gamepad.z       = 0;
+  gamepad.rz      = 0;
+  gamepad.rx      = 0;
+  gamepad.ry      = 0;
+  gamepad.hat     = 0;
   gamepad.buttons = 0;
 }
 
-// Sends Usb report for keyboard 
-void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count)
+// Sends Usb report for keyboard
+void send_usb_report(Adafruit_USBD_HID* hid, uint8_t* keyboard_report, uint8_t count)
 {
   static bool keyPressedPreviously = false;
 
@@ -66,7 +64,7 @@ void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t
   {
     // Send report if there is key pressed
     uint8_t const report_id = 0;
-    uint8_t const modifier = 0;  // modifier keys stored in array of 1 bit numbers
+    uint8_t const modifier  = 0; // modifier keys stored in array of 1 bit numbers
 
     keyPressedPreviously = true;
     hid->keyboardReport(report_id, modifier, keyboard_report);
@@ -81,16 +79,10 @@ void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t
       keyPressedPreviously = false;
       hid->keyboardRelease(0);
     }
-
   }
-
 }
 
-void hid_report_callback(
-    uint8_t report_id,
-    hid_report_type_t report_type,
-    uint8_t const *buffer,
-    uint16_t bufsize)
+void hid_report_callback(uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)
 {
   (void)report_id;
   (void)bufsize;
@@ -108,4 +100,3 @@ void hid_report_callback(
   digitalWrite(LED_BUILTIN, ledIndicator & KEYBOARD_LED_CAPSLOCK);
 #endif
 }
-

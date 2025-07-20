@@ -3,6 +3,7 @@
 void parse_keys_and_send_usb()
 {
   int active_layer = 0;
+  
   set_pins(0);
   set_multiplexer(0);
 
