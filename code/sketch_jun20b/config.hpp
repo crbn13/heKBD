@@ -21,7 +21,7 @@ typedef uint8_t NORMALISED_ADC_VAL;
 
 #define MAX_ANALOG_VALUE 4096
 #define MIN_ANALOG_VALUE 0
-
+#define ANALOGUE_READ_RESOLUTION 12 // number of bits of accuracy
 
 // Multiplexer IO pins ~~~~~~~~~~~~~~~~~~~~~~~~~~
 #define MTP_BIN_PIN_1 D0 // These directly controll each analoge input multiplexer

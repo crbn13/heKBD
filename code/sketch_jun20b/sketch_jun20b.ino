@@ -30,6 +30,8 @@ void setup()
   digitalWrite(LED_BUILTIN, LOW);
 #endif
 
+  analogReadResolution(ANALOGUE_READ_RESOLUTION);
+
   // set binary multiplexer output pins
 
 
@@ -61,8 +63,6 @@ void setup()
   // {
   // keys[i].keycode = keymap.key[]
   // }
-
-  //analogReadResolution(12);
 
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
@@ -133,7 +133,7 @@ void loop()
   Serial.print(keys[1].active_state);
   Serial.print("  ");
   Serial.print(keys[1].has_value_changed);
-*/
+
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
@@ -146,6 +146,7 @@ void loop()
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
+  */
 
 
   end = micros();

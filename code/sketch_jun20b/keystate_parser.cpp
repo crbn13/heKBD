@@ -73,7 +73,7 @@ void parse_keys_and_send_usb()
       // variance in the analogue input
 
       const int top_bound     = 5;
-      const int bottom_bound  = 35; // The inaccuracy betwen the bottom of the strok and the top
+      const int bottom_bound  = 25; // The inaccuracy betwen the bottom of the strok and the top
       const int change_buffer = 5;
 
       //  MOTHER OPTIMSATION
