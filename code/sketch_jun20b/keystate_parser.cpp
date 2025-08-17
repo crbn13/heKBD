@@ -20,17 +20,10 @@ void parse_keys_and_send_usb()
   for (int i = 0; i < KEY_COUNT; i++)
   {
     keys[i].real = analogRead(ADC1); // reads analogue signal last
-
-    if (i + 1 > 4) // temporary while doing silly things with 9 key keyboard
-    {
-      set_multiplexer((i + 1) % 5 + 16);
-      set_pins((i + 1) % 5 + 16); // + 16 to skip to the next multiplexer
-    }
-    else
-    {
-      set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-      set_pins(i + 1);
-    }
+    
+    set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+    set_pins(i + 1);
+    
 
     modifier_changed = false;
 
@@ -166,7 +159,7 @@ void parse_keys_and_send_usb()
     }
 
     if (count > 5) // usb hid has a max report of 6 keys at a time :(
-      break; // break out of loop
+      break; // break out of 
   } // For loop
 
   set_pins(0); // Sets the values for the next loop

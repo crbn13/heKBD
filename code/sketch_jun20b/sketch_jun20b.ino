@@ -8,6 +8,7 @@
 #include "key.hpp"
 #include "multiplexer.hpp"
 #include "keystate_parser.hpp"
+#include "neopixel.hpp"
 
 
 
@@ -23,6 +24,7 @@ void setup()
 
   setup_pins();
   setup_usb();
+  neopixel_setup();
 
   // led pin
 #ifdef LED_BUILTIN
@@ -38,31 +40,8 @@ void setup()
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   key_vals[0].keycode[0] = HID_KEY_X;
-  key_vals[1].keycode[0] = HID_KEY_C;
-  key_vals[2].keycode[0] = HID_KEY_Y;
+  key_vals[1].keycode[0] = HID_KEY_Y;
   
-  key_vals[3].keycode[0] = HID_KEY_A;
-  // key_vals[3].key_type[0] = KeyTypes::analog_joystick;
-  // key_vals[3].joystick_direction = -1;
-  // key_vals[3].joystick_value = &gamepad.x;
-  //key_vals[3].
-
-  key_vals[4].keycode[0] = HID_KEY_S;
-  
-  key_vals[5].keycode[0] = HID_KEY_D;
-  // key_vals[5].key_type[0] = KeyTypes::analog_joystick;
-  // key_vals[5].joystick_direction = 1;
-  // key_vals[5].joystick_value = &gamepad.x;
-
-  key_vals[6].keycode[0] = HID_KEY_Q;
-  key_vals[7].keycode[0] = HID_KEY_W;
-  key_vals[8].keycode[0] = HID_KEY_R;
-  // need to actually make the custom keymap
-
-  // for ( int i = 0 ; i < KEY_COUNT ; i++)
-  // {
-  // keys[i].keycode = keymap.key[]
-  // }
 
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
@@ -74,7 +53,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 1000;
+const int cycles =200;
 
 void loop()
 {
@@ -100,11 +79,15 @@ void loop()
     //while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
     parse_keys_and_send_usb();
+
     int timeDifference = 1000 - micros() + inner_start;
     if (timeDifference > 0)
       delayMicroseconds(timeDifference); 
   }
+
+  neopixel_update();
   /*
+ 
   Serial.print(keys[0].real);
   Serial.print("  ");
   Serial.print(keys[0].normalised);
@@ -132,7 +115,8 @@ void loop()
   Serial.print("  ");
   Serial.print(keys[1].active_state);
   Serial.print("  ");
-  Serial.print(keys[1].has_value_changed);
+  Serial.println(keys[1].has_value_changed);
+  */
 
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
@@ -146,7 +130,6 @@ void loop()
   }
   Serial.print("\t| HZ = ");
   Serial.println(hz);
-  */
 
 
   end = micros();

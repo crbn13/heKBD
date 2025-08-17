@@ -3,10 +3,11 @@
 
 #include <cstdio>
 #include <Arduino.h>
+#include <Adafruit_TinyUSB.h>
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
-#define KEY_COUNT 9
+#define KEY_COUNT 22
 #define FUNCTION_LAYERS 3
 
 #define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
@@ -14,6 +15,10 @@
 // Analogue pins : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #define ADC1 A0
 
+// Neopixels ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#define NEOPIXEL_DATA_PIN D16
+#define NEOPIXEL_COUNT 3
 
 // Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 typedef uint8_t NORMALISED_ADC_VAL;
