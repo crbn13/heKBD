@@ -38,11 +38,24 @@ void setup()
 
 
   // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // set keycode values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  key_vals[0].keycode[0] = HID_KEY_X;
-  key_vals[1].keycode[0] = HID_KEY_Y;
   
+  for (int i = 0 ; i < KEY_COUNT; i++)
+  {
+    key_vals[i].keycode[0] = HID_KEY_Z;
+  }
+  
+  key_vals[0].keycode[0] = HID_KEY_X;
+  key_vals[1].keycode[0] = HID_KEY_A;  
+  key_vals[2].keycode[0] = HID_KEY_B;
+  key_vals[3].keycode[0] = HID_KEY_C;
+  key_vals[4].keycode[0] = HID_KEY_D;
+  key_vals[5].keycode[0] = HID_KEY_E;
+  key_vals[6].keycode[0] = HID_KEY_F;
+  key_vals[7].keycode[0] = HID_KEY_G;
+  key_vals[8].keycode[0] = HID_KEY_H;
+  key_vals[9].keycode[0] = HID_KEY_I;
 
+  
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
     keys[i].real = analogRead(ADC1);
@@ -85,7 +98,7 @@ void loop()
       delayMicroseconds(timeDifference); 
   }
 
-  neopixel_update();
+  // neopixel_update();
   /*
  
   Serial.print(keys[0].real);
@@ -121,14 +134,16 @@ void loop()
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
-    Serial.print(" | Pin ");
-    Serial.print(i);
-    Serial.print(" = ");
+    // Serial.print(" | Pin ");
+    // Serial.print(i);
+    // Serial.print(" = ");
+    // Serial.print(keys[i].real);
+    // Serial.print(" : ");
+    // Serial.print(keys[i].normalised);
     Serial.print(keys[i].real);
-    Serial.print(" : ");
-    Serial.print(keys[i].normalised);
+    Serial.print("\t");
   }
-  Serial.print("\t| HZ = ");
+  Serial.print(" | HZ = ");
   Serial.println(hz);
 
 
