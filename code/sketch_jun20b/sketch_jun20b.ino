@@ -66,7 +66,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles =200;
+const int cycles = 1;
 
 void loop()
 {
@@ -91,7 +91,31 @@ void loop()
     // val = analogRead(ADC2);
     //while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    parse_keys_and_send_usb();
+    // parse_keys_and_send_usb();
+
+    // Temporary just investigating the bad interference
+    for ( int i = 0 ; i < KEY_COUNT; i ++)
+    {
+      if ( i + 1 == (1 || 16 || 17 || 18 || 19 || 21))
+      {
+        // dont want to read these inputs so do nothing 
+      }
+      else 
+      {
+        keys[i].real = analogRead(ADC1); // reads analogue signal last
+      }
+      
+      
+      set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+      set_pins(i + 1);
+
+      delay(5);
+
+    }
+
+    set_multiplexer(0); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+    set_pins(0);
+
 
     int timeDifference = 1000 - micros() + inner_start;
     if (timeDifference > 0)

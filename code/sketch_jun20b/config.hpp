@@ -7,7 +7,7 @@
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
-#define KEY_COUNT 15
+#define KEY_COUNT 22
 #define FUNCTION_LAYERS 1
 
 #define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
