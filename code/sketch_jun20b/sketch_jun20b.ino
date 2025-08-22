@@ -66,7 +66,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 1;
+const int cycles = 100;
 
 void loop()
 {
@@ -89,41 +89,10 @@ void loop()
     }
     // int val = analogRead(ADC1);
     // val = analogRead(ADC2);
-    //while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    // parse_keys_and_send_usb();
+    while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    // Temporary just investigating the bad interference
-    for ( int i = 0 ; i < KEY_COUNT; i ++)
-    {
-      if ( 
-        i + 1 == 1  ||
-        i + 1 == 15 ||
-        i + 1 == 16 ||
-        i + 1 == 17 ||
-        i + 1 == 18 ||
-        i + 1 == 19 ||
-        i + 1 == 21 )
-      {
-        // dont want to read these inputs so do nothing 
-        //  keys[i].real = analogRead(ADC1); // reads analogue signal last
-
-      }
-      else 
-      {
-        keys[i].real = analogRead(ADC1); // reads analogue signal last
-      }
-      
-      
-      set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-      set_pins(i + 1);
-
-      delay(1);
-
-    }
-
-    set_multiplexer(0); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-    set_pins(0);
+    parse_keys_and_send_usb();
 
 
     int timeDifference = 1000 - micros() + inner_start;
