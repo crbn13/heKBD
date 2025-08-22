@@ -96,9 +96,18 @@ void loop()
     // Temporary just investigating the bad interference
     for ( int i = 0 ; i < KEY_COUNT; i ++)
     {
-      if ( i + 1 == (1 || 16 || 17 || 18 || 19 || 21))
+      if ( 
+        i + 1 == 1  ||
+        i + 1 == 15 ||
+        i + 1 == 16 ||
+        i + 1 == 17 ||
+        i + 1 == 18 ||
+        i + 1 == 19 ||
+        i + 1 == 21 )
       {
         // dont want to read these inputs so do nothing 
+        //  keys[i].real = analogRead(ADC1); // reads analogue signal last
+
       }
       else 
       {
@@ -109,7 +118,7 @@ void loop()
       set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
       set_pins(i + 1);
 
-      delay(5);
+      delay(1);
 
     }
 
