@@ -44,7 +44,10 @@ void setup()
     key_vals[i].keycode[0] = HID_KEY_Z;
   }
   
-  key_vals[0].keycode[0] = HID_KEY_GRAVE;
+  
+  key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
+  key_vals[0].keycode[0] = 1; // Layer 1
+
   key_vals[1].keycode[0] = HID_KEY_SPACE;  
   key_vals[2].keycode[0] = HID_KEY_EQUAL;
   key_vals[3].keycode[0] = HID_KEY_MINUS;
@@ -79,6 +82,16 @@ void setup()
   key_vals[32].keycode[0] = HID_KEY_2;
   key_vals[33].keycode[0] = HID_KEY_1;
   key_vals[34].keycode[0] = HID_KEY_ESCAPE;
+
+  // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  key_vals[2].keycode[1] = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
+  key_vals[3].keycode[1] = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
+
+  key_vals[33].keycode[1] = HID_KEY_F1;
+  key_vals[32].keycode[1] = HID_KEY_F2;
+  key_vals[31].keycode[1] = HID_KEY_F3;
+  key_vals[30].keycode[1] = HID_KEY_F4;
+  key_vals[29].keycode[1] = HID_KEY_F5;
 
   
   // Set min vals :

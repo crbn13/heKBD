@@ -1,8 +1,11 @@
+#include <sys/_stdint.h>
 #include "keystate_parser.hpp"
+#include "key.hpp"
 
 void parse_keys_and_send_usb()
 {
-  int active_layer = 0;
+  static uint8_t active_layer = 0;
+  static bool active_function_layers[FUNCTION_LAYERS] {0} ; // Used to record which function layer modifier keys are pressed.
   
   set_pins(0);
   set_multiplexer(0);
@@ -24,7 +27,7 @@ void parse_keys_and_send_usb()
     set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
     set_pins(i + 1);
 
-    delayMicroseconds(20); // this stops interference between keys
+    delayMicroseconds(10); // this stops interference between keys
 
 
     modifier_changed = false;
@@ -59,7 +62,16 @@ void parse_keys_and_send_usb()
     if (+int(abs((+keys[i].real - keys[i].min_real) * keys[i].factor)) > MAX_NORMALISED_ADC_VAL) // no cheeky buffer overflows
       keys[i].normalised = MAX_NORMALISED_ADC_VAL;
 
-    switch (key_vals[i].key_type[active_layer])
+    if (keys[i].active_state) // If the key is pressed down already 
+    {
+      
+    }
+    else // If The key is not already pressed down  
+    {
+      key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
+    }
+
+    switch (key_vals[i].key_type[key_vals[i].active_fn_layer])
     {
     case KeyTypes::rapid_trigger:
     {
@@ -147,6 +159,30 @@ void parse_keys_and_send_usb()
       }
       break;
     }
+    case KeyTypes::function_key:
+    {
+      if (keys[i].normalised > 255/2)
+      {
+        keys[i].active_state = true;
+        active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
+      }
+      else 
+      {
+        if (keys[i].active_state)
+        {
+          active_layer = 0; // Because no longer active, creates possible edge case as the "frame" when modifier key released will make wrong keys be active 
+        }
+        keys[i].active_state = false;
+
+
+      }
+      break;
+    }
+    case KeyTypes::unassigned:
+    {
+        break;
+    }
+
     default:
     {
       //nuffin to do here

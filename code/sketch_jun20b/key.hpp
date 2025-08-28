@@ -12,15 +12,17 @@ enum
   rapid_trigger,
   analog_joystick,
   modifier_key,
+  function_key,
   unassigned,
 };
 
 };
 struct KeyValue // stores the keycodes and more of each switch, each element of this struct that will be an array will represent the same value as the keys[] array
 {
-  uint8_t keycode[FUNCTION_LAYERS];        // the HID_KEY value of the specific switch
+  uint8_t keycode[FUNCTION_LAYERS];        // the HID_KEY value of the specific switch. Also used for function layer
   uint8_t key_type[FUNCTION_LAYERS];   // the type of key that the key is  
   uint8_t actuation_point; // the point at which the key achuates if its a standard_actuation key
+  uint8_t active_fn_layer; // The active function layer that was active when the key was initially depressed
 
 // ¬¬¬¬¬¬¬¬¬¬¬ Analoge stuff : 
   uint8_t deadzone;
@@ -42,11 +44,7 @@ struct Key {
   bool active_state;      // The state that was last sent over usb
   int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
 
-  Key()
-      : normalised(0), real(0), min_real(MAX_ANALOG_VALUE),
-        max_real(MIN_ANALOG_VALUE), factor(0.0F), active_state(0), has_value_changed(0)
-  {
-  }
+  Key();
 };
 
 extern Key keys[KEY_COUNT]; // initialize the array
