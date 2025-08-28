@@ -67,9 +67,9 @@ void parse_keys_and_send_usb()
       const int bounds_checker = 10; // needs renaming, it accounts for the random
       // variance in the analogue input
 
-      const int top_bound     = 5;
-      const int bottom_bound  = 25; // The inaccuracy betwen the bottom of the strok and the top
-      const int change_buffer = 5;
+      const int top_bound     = 10;
+      const int bottom_bound  = 35; // The inaccuracy betwen the bottom of the strok and the top
+      const int change_buffer = 10;
 
       //  MOTHER OPTIMSATION
       // divide by the bounds checker and ignore the remainder which has the ish
