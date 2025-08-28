@@ -24,7 +24,7 @@ void parse_keys_and_send_usb()
     set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
     set_pins(i + 1);
 
-    // delayMicroseconds(200); // this stops interference between keys
+    delayMicroseconds(20); // this stops interference between keys
 
 
     modifier_changed = false;
@@ -42,7 +42,7 @@ void parse_keys_and_send_usb()
 
     auto change_modifier = [&]()
     {
-      if (keys[i].max_real != keys[i].min_real && keys[i].max_real - keys[i].min_real > 50) // only set modifier if
+      if (keys[i].max_real != keys[i].min_real && keys[i].max_real - keys[i].min_real > 200) // only set modifier if
         keys[i].factor = (float)(NORMALISED_ADC_VAL)(-1) / (keys[i].max_real - keys[i].min_real);
       modifier_changed = false;
     };

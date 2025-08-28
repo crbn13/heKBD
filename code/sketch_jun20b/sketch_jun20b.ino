@@ -44,16 +44,41 @@ void setup()
     key_vals[i].keycode[0] = HID_KEY_Z;
   }
   
-  key_vals[0].keycode[0] = HID_KEY_X;
-  key_vals[1].keycode[0] = HID_KEY_A;  
-  key_vals[2].keycode[0] = HID_KEY_B;
-  key_vals[3].keycode[0] = HID_KEY_C;
-  key_vals[4].keycode[0] = HID_KEY_D;
-  key_vals[5].keycode[0] = HID_KEY_E;
-  key_vals[6].keycode[0] = HID_KEY_F;
-  key_vals[7].keycode[0] = HID_KEY_G;
-  key_vals[8].keycode[0] = HID_KEY_H;
-  key_vals[9].keycode[0] = HID_KEY_I;
+  key_vals[0].keycode[0] = HID_KEY_GRAVE;
+  key_vals[1].keycode[0] = HID_KEY_SPACE;  
+  key_vals[2].keycode[0] = HID_KEY_EQUAL;
+  key_vals[3].keycode[0] = HID_KEY_MINUS;
+  key_vals[4].keycode[0] = HID_KEY_ALT_LEFT;
+  key_vals[5].keycode[0] = HID_KEY_OPER;
+  key_vals[6].keycode[0] = HID_KEY_CONTROL_LEFT;
+  key_vals[7].keycode[0] = HID_KEY_SHIFT_LEFT;
+  key_vals[8].keycode[0] = HID_KEY_Z;
+  key_vals[9].keycode[0] = HID_KEY_X;
+  key_vals[10].keycode[0] = HID_KEY_C;
+  key_vals[11].keycode[0] = HID_KEY_V;
+  key_vals[12].keycode[0] = HID_KEY_B;
+  key_vals[13].keycode[0] = HID_KEY_CAPS_LOCK;
+  key_vals[14].keycode[0] = HID_KEY_HOME;
+  key_vals[15].keycode[0] = HID_KEY_PAGE_DOWN;
+  key_vals[16].keycode[0] = HID_KEY_G;
+  key_vals[17].keycode[0] = HID_KEY_F;
+  key_vals[18].keycode[0] = HID_KEY_D;
+  key_vals[19].keycode[0] = HID_KEY_S;
+  key_vals[20].keycode[0] = HID_KEY_A;
+  key_vals[21].keycode[0] = HID_KEY_0;
+  key_vals[22].keycode[0] = HID_KEY_TAB;
+  key_vals[23].keycode[0] = HID_KEY_Q;
+  key_vals[24].keycode[0] = HID_KEY_W;
+  key_vals[25].keycode[0] = HID_KEY_E;
+  key_vals[26].keycode[0] = HID_KEY_R;
+  key_vals[27].keycode[0] = HID_KEY_T;
+  key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
+  key_vals[29].keycode[0] = HID_KEY_5;
+  key_vals[30].keycode[0] = HID_KEY_4;
+  key_vals[31].keycode[0] = HID_KEY_3;
+  key_vals[32].keycode[0] = HID_KEY_2;
+  key_vals[33].keycode[0] = HID_KEY_1;
+  key_vals[34].keycode[0] = HID_KEY_ESCAPE;
 
   
   // Set min vals :
@@ -89,24 +114,22 @@ void loop()
     {
       return;
     }
-    // int val = analogRead(ADC1);
-    // val = analogRead(ADC2);
 
     while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    // parse_keys_and_send_usb();
+    parse_keys_and_send_usb();
 
-    for ( int i = 0 ; i < KEY_COUNT ; i ++)
-    {
-      keys[i].real = analogRead(ADC1);
+    // for ( int i = 0 ; i < KEY_COUNT ; i ++)
+    // {
+    //   keys[i].real = analogRead(ADC1);
       
-      set_multiplexer(i+1);      
-      set_pins(i+1);
+    //   set_multiplexer(i+1);      
+    //   set_pins(i+1);
 
-      delayMicroseconds(20);
-    }
-    set_pins(0);
-    set_multiplexer(0);
+    //   delayMicroseconds(20);
+    // }
+    // set_pins(0);
+    // set_multiplexer(0);
 
     int timeDifference = 1000 - micros() + inner_start;
     if (timeDifference > 0)
@@ -144,7 +167,6 @@ void loop()
   Serial.print(keys[1].active_state);
   Serial.print("  ");
   Serial.println(keys[1].has_value_changed);
-  */
 
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
@@ -174,5 +196,7 @@ void loop()
 
   // Serial.print("\t| HZ = ");
   // Serial.println(hz);
+  */
+
 }
 
