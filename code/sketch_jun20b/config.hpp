@@ -7,8 +7,8 @@
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
-#define KEY_COUNT 22
-#define FUNCTION_LAYERS 1
+#define KEY_COUNT 35
+#define FUNCTION_LAYERS 2
 
 #define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
 
@@ -18,7 +18,7 @@
 // Neopixels ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #define NEOPIXEL_DATA_PIN D16
-#define NEOPIXEL_COUNT 3
+#define NEOPIXEL_COUNT 35
 
 // Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 typedef uint8_t NORMALISED_ADC_VAL;

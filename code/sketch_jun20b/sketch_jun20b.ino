@@ -68,6 +68,8 @@ void setup()
 
 const int cycles = 100;
 
+int temparr[35] {0} ;//temporary
+
 void loop()
 {
   start = micros(); // get time
@@ -92,8 +94,19 @@ void loop()
 
     while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    parse_keys_and_send_usb();
+    // parse_keys_and_send_usb();
 
+    for ( int i = 0 ; i < KEY_COUNT ; i ++)
+    {
+      keys[i].real = analogRead(ADC1);
+      
+      set_multiplexer(i+1);      
+      set_pins(i+1);
+
+      delayMicroseconds(20);
+    }
+    set_pins(0);
+    set_multiplexer(0);
 
     int timeDifference = 1000 - micros() + inner_start;
     if (timeDifference > 0)
@@ -142,7 +155,9 @@ void loop()
     // Serial.print(keys[i].real);
     // Serial.print(" : ");
     // Serial.print(keys[i].normalised);
+    // Serial.print(keys[i].real - temparr[i]);
     Serial.print(keys[i].real);
+    temparr[i] = keys[i].real;
     Serial.print("\t");
   }
   Serial.print(" | HZ = ");

@@ -19,28 +19,12 @@ void parse_keys_and_send_usb()
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-    // TEMPORARY CODE : 
-    if (
-      i + 1 == 1  ||
-      i + 1 == 15 ||
-      i + 1 == 16 ||
-      i + 1 == 17 ||
-      i + 1 == 18 ||
-      i + 1 == 19 ||
-      i + 1 == 20 ||
-      i + 1 == 21 ||
-      i + 1 == 22 )
-    {
-
-    }
-    else 
-      keys[i].real = analogRead(ADC1); // reads analogue signal last
+    keys[i].real = analogRead(ADC1); // reads analogue signal last
     
-
     set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
     set_pins(i + 1);
 
-    delayMicroseconds(200); // this stops interference between keys
+    // delayMicroseconds(200); // this stops interference between keys
 
 
     modifier_changed = false;
