@@ -1,4 +1,3 @@
-#include <sys/_stdint.h>
 #include "keystate_parser.hpp"
 #include "key.hpp"
 
@@ -73,6 +72,7 @@ void parse_keys_and_send_usb()
 
     switch (key_vals[i].key_type[key_vals[i].active_fn_layer])
     {
+
     case KeyTypes::rapid_trigger:
     {
 
@@ -100,19 +100,19 @@ void parse_keys_and_send_usb()
         else if (keys[i].normalised < +previous - change_buffer && keys[i].normalised < MAX_NORMALISED_ADC_VAL - bottom_bound) // check if direction of keystroke changed in middle of stroke
         {
           keys[i].active_state = false;
-          keycodes[count++]    = key_vals[i].keycode[active_layer];
+          keycodes[count++]    = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised >= MAX_NORMALISED_ADC_VAL - bottom_bound) // if its at the 255 ranges
         {
-          keycodes[count++] = key_vals[i].keycode[active_layer];
+          keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised > previous) // check if key travelling downwards
         {
-          keycodes[count++] = key_vals[i].keycode[active_layer];
+          keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else // if neither then set value to previous and switch still pressed
         {
-          keycodes[count++]  = key_vals[i].keycode[active_layer];
+          keycodes[count++]  = key_vals[i].keycode[key_vals[i].active_fn_layer];
           keys[i].normalised = previous;
         }
       }
@@ -122,7 +122,8 @@ void parse_keys_and_send_usb()
         {
           keys[i].has_value_changed = 0;
           keys[i].active_state      = true;
-          keycodes[count++]         = key_vals[i].keycode[active_layer];
+          key_vals[i].active_fn_layer = active_layer;
+          keycodes[count++]         = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised > previous) // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
         {
@@ -146,7 +147,7 @@ void parse_keys_and_send_usb()
     {
       if (keys[i].normalised > 100)
       {
-        keycodes[count++] = key_vals[i].keycode[active_layer];
+        keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
       }
       break;
     }
@@ -163,8 +164,14 @@ void parse_keys_and_send_usb()
     {
       if (keys[i].normalised > 255/2)
       {
-        keys[i].active_state = true;
-        active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
+        if (keys[i].active_state)
+        {
+        }
+        else 
+        {
+          keys[i].active_state = true;
+          active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
+        }
       }
       else 
       {
@@ -172,6 +179,7 @@ void parse_keys_and_send_usb()
         {
           active_layer = 0; // Because no longer active, creates possible edge case as the "frame" when modifier key released will make wrong keys be active 
         }
+        
         keys[i].active_state = false;
 
 
