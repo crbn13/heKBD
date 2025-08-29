@@ -68,7 +68,7 @@ void parse_keys_and_send_usb()
     }
     else // If The key is not already pressed down  
     {
-      // key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
+      key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
     }
 
     switch (key_vals[i].key_type[key_vals[i].active_fn_layer])
@@ -146,7 +146,7 @@ void parse_keys_and_send_usb()
     }
     case KeyTypes::standard_actuation:
     {
-      if (keys[i].normalised > 100)
+      if (keys[i].normalised > key_vals[i].actuation_point)
       {
         key_vals[i].active_fn_layer = active_layer;
         keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
@@ -171,8 +171,6 @@ void parse_keys_and_send_usb()
         }
         else 
         {
-          Serial.print("activated function layer is ");
-          Serial.println(key_vals[i].keycode[key_vals[i].active_fn_layer]);
           key_vals[i].active_fn_layer = active_layer;
           active_function_layers[key_vals[i].keycode[key_vals[i].active_fn_layer]] = true;
           next_active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];

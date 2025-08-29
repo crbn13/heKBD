@@ -8,9 +8,9 @@
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
 #define KEY_COUNT 35
-#define FUNCTION_LAYERS 2
+#define FUNCTION_LAYERS 4
 
-#define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE // temporary 
+#define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE 
 
 // Analogue pins : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #define ADC1 A0
