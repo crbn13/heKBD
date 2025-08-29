@@ -4,6 +4,7 @@
 void parse_keys_and_send_usb()
 {
   static uint8_t active_layer = 0;
+  uint8_t next_active_layer = active_layer;
   static bool active_function_layers[FUNCTION_LAYERS] {0} ; // Used to record which function layer modifier keys are pressed.
   
   set_pins(0);
@@ -100,7 +101,7 @@ void parse_keys_and_send_usb()
         else if (keys[i].normalised < +previous - change_buffer && keys[i].normalised < MAX_NORMALISED_ADC_VAL - bottom_bound) // check if direction of keystroke changed in middle of stroke
         {
           keys[i].active_state = false;
-          keycodes[count++]    = key_vals[i].keycode[key_vals[i].active_fn_layer];
+          // keycodes[count++]    = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised >= MAX_NORMALISED_ADC_VAL - bottom_bound) // if its at the 255 ranges
         {
@@ -122,7 +123,7 @@ void parse_keys_and_send_usb()
         {
           keys[i].has_value_changed = 0;
           keys[i].active_state      = true;
-          key_vals[i].active_fn_layer = active_layer;
+          // key_vals[i].active_fn_layer = active_layer;
           keycodes[count++]         = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised > previous) // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
@@ -169,20 +170,28 @@ void parse_keys_and_send_usb()
         }
         else 
         {
+          key_vals[i].active_fn_layer = active_layer;
+          active_function_layers[key_vals[i].keycode[key_vals[i].active_fn_layer]] = true;
+          next_active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
           keys[i].active_state = true;
-          active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
       }
       else 
       {
         if (keys[i].active_state)
         {
-          active_layer = 0; // Because no longer active, creates possible edge case as the "frame" when modifier key released will make wrong keys be active 
+          active_function_layers[key_vals[i].keycode[key_vals[i].active_fn_layer]] = false;
+
+          next_active_layer = 0;
+          for (int x = 0 ; x < FUNCTION_LAYERS; x ++ )
+          {
+            if (active_function_layers[x])
+              next_active_layer = x; 
+          } // When modifier key released, sets to next highest modifier layer
+            // might induce edge case when function layer goes to one below it
         }
         
         keys[i].active_state = false;
-
-
       }
       break;
     }
@@ -207,6 +216,8 @@ void parse_keys_and_send_usb()
     if (count > 5) // usb hid has a max report of 6 keys at a time :(
       break; // break out of 
   } // For loop
+
+  active_layer = next_active_layer; // Set last to restrict keys checked aftter modifier key in series
 
   set_pins(0); // Sets the values for the next loop
   set_multiplexer(0);

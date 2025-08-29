@@ -32,7 +32,7 @@ struct KeyValue // stores the keycodes and more of each switch, each element of 
   
   
   // initializer 
-  KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20), joystick_direction(1), joystick_value(std::nullptr_t()) { keycode[0] = HID_KEY_Z; }
+  KeyValue();
 };
 
 struct Key {
