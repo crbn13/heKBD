@@ -6,10 +6,11 @@ Key::Key()
   {
   }
 
-KeyValue::KeyValue() : keycode{0}, key_type{KeyTypes::rapid_trigger}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20), joystick_direction(1), joystick_value(std::nullptr_t())
+KeyValue::KeyValue() : keycode{0}, key_type{0}, actuation_point(MAX_NORMALISED_ADC_VAL/2), deadzone(20), joystick_direction(1), joystick_value(std::nullptr_t())
 {
   for (int i = 0 ; i < FUNCTION_LAYERS ; i++)
   {
+    key_type[i] = KeyTypes::rapid_trigger;
     keycode[i] = HID_KEY_Z;
   }
 }

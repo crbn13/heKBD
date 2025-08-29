@@ -93,6 +93,11 @@ void setup()
   key_vals[30].keycode[1] = HID_KEY_F4;
   key_vals[29].keycode[1] = HID_KEY_F5;
 
+  Serial.print("Keytype layer 0 = ");
+  Serial.print(key_vals[0].key_type[0]);
+
+  Serial.print(" : Keytype layer 1 = ");
+  Serial.println(key_vals[0].key_type[1]);
   
   // Set min vals :
   for (int i = 0; i < KEY_COUNT; i++) {
@@ -111,6 +116,12 @@ int temparr[35] {0} ;//temporary
 void loop()
 {
   start = micros(); // get time
+
+  Serial.print("Keytype layer 0 = ");
+  Serial.print(key_vals[1].key_type[0]);
+
+  Serial.print(" : Keytype layer 1 = ");
+  Serial.println(key_vals[1].key_type[1]);
 
   unsigned int inner_start = micros();
 

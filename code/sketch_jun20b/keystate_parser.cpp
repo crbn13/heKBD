@@ -68,7 +68,7 @@ void parse_keys_and_send_usb()
     }
     else // If The key is not already pressed down  
     {
-      key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
+      // key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
     }
 
     switch (key_vals[i].key_type[key_vals[i].active_fn_layer])
@@ -123,7 +123,7 @@ void parse_keys_and_send_usb()
         {
           keys[i].has_value_changed = 0;
           keys[i].active_state      = true;
-          // key_vals[i].active_fn_layer = active_layer;
+          key_vals[i].active_fn_layer = active_layer;
           keycodes[count++]         = key_vals[i].keycode[key_vals[i].active_fn_layer];
         }
         else if (keys[i].normalised > previous) // if the keystroke is going downwards then set the value to previous so that the distance gets bigger if it keeps going down
@@ -148,6 +148,7 @@ void parse_keys_and_send_usb()
     {
       if (keys[i].normalised > 100)
       {
+        key_vals[i].active_fn_layer = active_layer;
         keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
       }
       break;
@@ -170,6 +171,8 @@ void parse_keys_and_send_usb()
         }
         else 
         {
+          Serial.print("activated function layer is ");
+          Serial.println(key_vals[i].keycode[key_vals[i].active_fn_layer]);
           key_vals[i].active_fn_layer = active_layer;
           active_function_layers[key_vals[i].keycode[key_vals[i].active_fn_layer]] = true;
           next_active_layer = key_vals[i].keycode[key_vals[i].active_fn_layer];
