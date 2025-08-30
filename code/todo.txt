@@ -5,6 +5,12 @@ Filesystem for keymap and settings
 File parser to get keymap
 keymap.old file saving
 
+Rgb array
+
+Mouse input - scroll wheel
+
+Fix crashing issue
+
 Analogue input :
   create class to easily add analogue pins ? 
   Portion up files ? actually organise some code god forbid
