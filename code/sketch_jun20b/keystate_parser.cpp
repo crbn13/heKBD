@@ -1,6 +1,4 @@
-#include <sys/_stdint.h>
 #include "keystate_parser.hpp"
-#include "key.hpp"
 
 void parse_keys_and_send_usb()
 {

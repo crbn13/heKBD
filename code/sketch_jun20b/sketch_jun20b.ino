@@ -13,8 +13,8 @@
 
 
 // HZ controll stuff 
-long start = 0;
-long end = 100; // just in case div0 happens
+unsigned long start = 0;
+unsigned long end = 100; // just in case div0 happens
 float hz = 0;
 
 
@@ -112,7 +112,7 @@ void loop()
 {
   start = micros(); // get time
 
-  unsigned int inner_start = micros();
+  unsigned long inner_start = micros();
 
   for (int i = 0; i < cycles; i++)
   {
@@ -144,12 +144,12 @@ void loop()
     // set_pins(0);
     // set_multiplexer(0);
 
-    int timeDifference = 1000 - micros() + inner_start;
+    long int timeDifference = 1000 - micros() + inner_start;
     if (timeDifference > 0)
       delayMicroseconds(timeDifference); 
   }
 
-  // neopixel_update();
+  neopixel_update();
   /*
  
   Serial.print(keys[0].real);
