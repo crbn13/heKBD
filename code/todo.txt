@@ -9,7 +9,7 @@ Rgb array
 
 Mouse input - scroll wheel
 
-Fix crashing issue
+Fix crashing issue | I think this is done, but wont know till more extensive testing
 
 Analogue input :
   create class to easily add analogue pins ? 

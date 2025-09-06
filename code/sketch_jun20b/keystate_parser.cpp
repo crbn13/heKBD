@@ -26,7 +26,7 @@ void parse_keys_and_send_usb()
     set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
     set_pins(i + 1);
 
-    delayMicroseconds(10); // this stops interference between keys
+    delayMicroseconds(5); // this stops interference between keys
 
 
     modifier_changed = false;

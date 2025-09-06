@@ -104,7 +104,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 100;
+const int cycles = 200;
 
 int temparr[35] {0} ;//temporary
 
@@ -134,12 +134,12 @@ void loop()
 
     // for ( int i = 0 ; i < KEY_COUNT ; i ++)
     // {
-    //   keys[i].real = analogRead(ADC1);
+      // keys[i].real = analogRead(ADC1);
       
-    //   set_multiplexer(i+1);      
-    //   set_pins(i+1);
-
-    //   delayMicroseconds(20);
+      // set_multiplexer(i+1);      
+      // set_pins(i+1);
+// 
+      // delayMicroseconds(5);
     // }
     // set_pins(0);
     // set_multiplexer(0);
@@ -192,7 +192,7 @@ void loop()
     // Serial.print(keys[i].normalised);
     // Serial.print(keys[i].real - temparr[i]);
     Serial.print(keys[i].real);
-    temparr[i] = keys[i].real;
+    // temparr[i] = keys[i].real;
     Serial.print("\t");
   }
   Serial.print(" | HZ = ");
@@ -202,14 +202,15 @@ void loop()
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
-  hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
+  */
+
+  // hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
   // ~~ Speeds notes : ~~ standard clock speed
   // when just doing the 2 analog reads it runs at : 116,813.56 hz
   // When printing each analog value to serial : 9,000 hz
 
   // Serial.print("\t| HZ = ");
   // Serial.println(hz);
-  */
 
 }
 
