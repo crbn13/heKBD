@@ -52,8 +52,11 @@ void setup()
   key_vals[2].keycode[0] = HID_KEY_EQUAL;
   key_vals[3].keycode[0] = HID_KEY_MINUS;
   key_vals[4].keycode[0] = HID_KEY_ALT_LEFT;
+  key_vals[4].key_type[0] = KeyTypes::standard_actuation;
   key_vals[5].keycode[0] = HID_KEY_GUI_LEFT;
+  key_vals[5].key_type[0] = KeyTypes::standard_actuation;
   key_vals[6].keycode[0] = HID_KEY_CONTROL_LEFT;
+  key_vals[6].key_type[0] = KeyTypes::standard_actuation;
   key_vals[7].keycode[0] = HID_KEY_SHIFT_LEFT;
   key_vals[8].keycode[0] = HID_KEY_Z;
   key_vals[9].keycode[0] = HID_KEY_X;
