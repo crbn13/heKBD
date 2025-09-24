@@ -65,7 +65,7 @@ void setup()
   key_vals[12].keycode[0] = HID_KEY_B;
   key_vals[13].keycode[0] = HID_KEY_CAPS_LOCK;
   key_vals[14].keycode[0] = HID_KEY_HOME;
-  key_vals[15].keycode[0] = HID_KEY_PAGE_DOWN;
+  key_vals[15].keycode[0] = HID_KEY_BRACKET_LEFT;
   key_vals[16].keycode[0] = HID_KEY_G;
   key_vals[17].keycode[0] = HID_KEY_F;
   key_vals[18].keycode[0] = HID_KEY_D;
@@ -85,16 +85,22 @@ void setup()
   key_vals[32].keycode[0] = HID_KEY_2;
   key_vals[33].keycode[0] = HID_KEY_1;
   key_vals[34].keycode[0] = HID_KEY_ESCAPE;
-
+  
   // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
-  key_vals[2].keycode[1] = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
-  key_vals[3].keycode[1] = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-
+  key_vals[1].keycode[1] = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
+  key_vals[2].keycode[1] = HID_KEY_VOLUME_UP; // layer 1 : equals
+  key_vals[3].keycode[1] = HID_KEY_VOLUME_DOWN; // layer 1 : minus
+  key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
+  key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+  key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+  key_vals[34].keycode[1] = HID_KEY_GRAVE;
   key_vals[33].keycode[1] = HID_KEY_F1;
   key_vals[32].keycode[1] = HID_KEY_F2;
   key_vals[31].keycode[1] = HID_KEY_F3;
   key_vals[30].keycode[1] = HID_KEY_F4;
   key_vals[29].keycode[1] = HID_KEY_F5;
+  key_vals[15].keycode[1] = HID_KEY_BRACKET_RIGHT;
+  key_vals[14].keycode[1] = HID_KEY_END;
 
   
   // Set min vals :
