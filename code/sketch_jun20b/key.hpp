@@ -13,6 +13,7 @@ enum
   analog_joystick,
   modifier_key,
   function_key,
+  macro_key,
   unassigned,
 };
 

@@ -113,7 +113,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 200;
+const int cycles = 100;
 
 int temparr[35] {0} ;//temporary
 
@@ -158,7 +158,8 @@ void loop()
       delayMicroseconds(timeDifference); 
   }
 
-  neopixel_update();
+  
+  neopixel_update(active_layer);
   /*
  
   Serial.print(keys[0].real);

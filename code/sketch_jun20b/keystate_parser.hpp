@@ -7,6 +7,9 @@
 
 void parse_keys_and_send_usb();
 
+extern uint8_t active_layer;
+
+
 #endif // Include guard
 
 
