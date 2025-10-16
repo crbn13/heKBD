@@ -15,6 +15,8 @@ void parse_keys_and_send_usb()
   static bool controller_input_previously = false;
   bool controller_input                   = false;
 
+  int adcReadings[4] {0};
+
   uint8_t count         = 0; // the number of keys being pressed
   uint8_t keycodes[6]   = { 0 }; // array of 6 keys that are being pressed
   bool modifier_changed = false;
@@ -22,7 +24,16 @@ void parse_keys_and_send_usb()
   // check active keys and assign to keycode
   for (int i = 0; i < KEY_COUNT; i++)
   {
-    keys[i].real = analogRead(ADC1); // reads analogue signal last
+
+    for (int j = 0 ; j < 4; j++)
+      adcReadings[j] = analogRead(ADC1);
+
+    int average {0};
+    for (int j = 0 ; j < 4; j++)
+      average += adcReadings[j];
+    average /= 4;
+
+    keys[i].real = average; // reads analogue signal last
     
     set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
     set_pins(i + 1);
