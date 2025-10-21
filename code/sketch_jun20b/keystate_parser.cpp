@@ -25,9 +25,11 @@ void parse_keys_and_send_usb()
   for (int i = 0; i < KEY_COUNT; i++)
   {
 
+    for (int j = 0 ; j < 4; j++) // Does some dummy readdings ? no idea if this makes any difference at all
+      adcReadings[j] = analogRead(ADC1); 
+
     for (int j = 0 ; j < 4; j++)
       adcReadings[j] = analogRead(ADC1);
-
     int average {0};
     for (int j = 0 ; j < 4; j++)
       average += adcReadings[j];
