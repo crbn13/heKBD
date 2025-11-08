@@ -15,7 +15,8 @@ void parse_keys_and_send_usb()
   static bool controller_input_previously = false;
   bool controller_input                   = false;
 
-  int adcReadings[4] {0};
+  const int reading_count = 2;
+  int adcReadings[reading_count] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
   uint8_t keycodes[6]   = { 0 }; // array of 6 keys that are being pressed
@@ -25,19 +26,29 @@ void parse_keys_and_send_usb()
   for (int i = 0; i < KEY_COUNT; i++)
   {
 
-    for (int j = 0 ; j < 4; j++)
+    for (int j = 0 ; j < reading_count; j++)
       adcReadings[j] = analogRead(ADC1);
     int average {0};
-    for (int j = 0 ; j < 4; j++)
+
+    for (int j = 0 ; j < reading_count; j++)
       average += adcReadings[j];
-    average /= 4;
+
+    average /= reading_count;
 
     keys[i].real = average; // reads analogue signal last
     
-    set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-    set_pins(i + 1);
+    if ( i < 5)
+    {
+      set_pins(i + 1);
+      set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+    }
+    else 
+    {
+      set_pins(i + 1 + 16 - 5);
+      set_multiplexer(i + 1 + 16 - 5); // Set the multiplexer val first because it should be disabled before changing to the wrong key
+    }
 
-    delayMicroseconds(5); // this stops interference between keys
+    delayMicroseconds(10); // this stops interference between keys
 
 
     modifier_changed = false;

@@ -7,18 +7,18 @@
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
-#define KEY_COUNT 35
+#define KEY_COUNT 9
 #define FUNCTION_LAYERS 4
 
 #define DIRECT_MULTIPLEXER_PIN_ENABLE_MODE 
 
 // Analogue pins : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#define ADC1 A0
+#define ADC1 A1
 
 // Neopixels ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #define NEOPIXEL_DATA_PIN D16
-#define NEOPIXEL_COUNT 35
+#define NEOPIXEL_COUNT 0
 
 // Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 typedef uint8_t NORMALISED_ADC_VAL;
