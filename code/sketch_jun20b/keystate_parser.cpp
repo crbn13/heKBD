@@ -15,7 +15,8 @@ void parse_keys_and_send_usb()
   static bool controller_input_previously = false;
   bool controller_input                   = false;
 
-  int adcReadings[4] {0};
+  const int readings_count = 9;
+  int adcReadings[readings_count] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
   uint8_t keycodes[6]   = { 0 }; // array of 6 keys that are being pressed
@@ -25,12 +26,12 @@ void parse_keys_and_send_usb()
   for (int i = 0; i < KEY_COUNT; i++)
   {
 
-    for (int j = 0 ; j < 4; j++)
+    for (int j = 0 ; j < readings_count; j++)
       adcReadings[j] = analogRead(ADC1);
     int average {0};
-    for (int j = 0 ; j < 4; j++)
+    for (int j = 0 ; j < readings_count; j++)
       average += adcReadings[j];
-    average /= 4;
+    average /= readings_count;
 
     keys[i].real = average; // reads analogue signal last
     

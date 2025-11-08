@@ -103,13 +103,6 @@ void setup()
   key_vals[14].keycode[1] = HID_KEY_END;
 
   
-  // Set min vals :
-  for (int i = 0; i < KEY_COUNT; i++) {
-    keys[i].real = analogRead(ADC1);
-    keys[i].min_real = keys[i].real;  // set the min value to the value at startup
-  }
-  // need to implement them being saved ofc
-
 }  // end of setup
 
 
@@ -159,7 +152,7 @@ void loop()
   }
 
   
-  neopixel_update(active_layer);
+  //neopixel_update(active_layer);
   /*
  
   Serial.print(keys[0].real);
@@ -191,19 +184,22 @@ void loop()
   Serial.print("  ");
   Serial.println(keys[1].has_value_changed);
 
+  */
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
-    // Serial.print(" | Pin ");
-    // Serial.print(i);
-    // Serial.print(" = ");
-    // Serial.print(keys[i].real);
-    // Serial.print(" : ");
-    // Serial.print(keys[i].normalised);
-    // Serial.print(keys[i].real - temparr[i]);
+    Serial.print(" | Pin ");
+    Serial.print(i);
+    Serial.print(" = ");
     Serial.print(keys[i].real);
+    Serial.print(" : ");
+    Serial.print(keys[i].normalised);
+    // Serial.print(keys[i].real - temparr[i]);
+    // Serial.print(keys[i].real);
     // temparr[i] = keys[i].real;
     Serial.print("\t");
+    if (i % 7 == 0)
+      Serial.print("\n");
   }
   Serial.print(" | HZ = ");
   Serial.println(hz);
@@ -212,7 +208,6 @@ void loop()
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
-  */
 
   // hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
   // ~~ Speeds notes : ~~ standard clock speed
