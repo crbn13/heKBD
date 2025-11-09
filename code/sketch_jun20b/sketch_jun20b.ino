@@ -184,7 +184,6 @@ void loop()
   Serial.print("  ");
   Serial.println(keys[1].has_value_changed);
 
-  */
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
@@ -208,6 +207,7 @@ void loop()
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
+  */
 
   // hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
   // ~~ Speeds notes : ~~ standard clock speed
