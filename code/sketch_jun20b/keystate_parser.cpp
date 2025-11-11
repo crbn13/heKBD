@@ -22,7 +22,7 @@ bool parse_keys_and_send_usb()
   int adcReadings[readings_count] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
-  uint8_t keycodes[6]   = { 0 }; // array of 6 keys that are being pressed
+  uint8_t keycodes[KEY_COUNT]   = { 0 }; // array of 6 keys that are being pressed // set to key count in sise just in case array overflow44444444444444444444444444444444444444444444444444444444444444444444444444
   bool modifier_changed = false;
 
   // check active keys and assign to keycode

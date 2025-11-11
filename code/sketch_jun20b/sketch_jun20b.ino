@@ -234,7 +234,6 @@ void loop()
   Serial.println(hz);
 
 
-  */
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -248,5 +247,6 @@ void loop()
   Serial.print("\t| HZ = ");
   Serial.println(hz);
 
+  */
 }
 
