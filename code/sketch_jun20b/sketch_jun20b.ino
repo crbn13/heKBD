@@ -109,12 +109,19 @@ void setup()
 const int cycles = 100;
 
 int temparr[35] {0} ;//temporary
-
+#define SLEEP_TIME 10000u
+#define FREQUENCY_AWAKE 1000 
+#define FREQUENCY_ASLEEP 100000
 void loop()
 {
   start = micros(); // get time
 
   unsigned long inner_start = micros();
+
+  // Used to set the sleep timer so that a sleep state is started when the keyboard has been inactive for an extended period of time
+  static unsigned long sleep_timer  = 0;
+  static bool sleep = false;
+  static unsigned int frequency = FREQUENCY_AWAKE;
 
   for (int i = 0; i < cycles; i++)
   {
@@ -132,7 +139,30 @@ void loop()
 
     while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
 
-    parse_keys_and_send_usb();
+    if (parse_keys_and_send_usb())
+    {
+      sleep_timer = 0u;
+      sleep = false;
+      frequency = FREQUENCY_AWAKE;
+    }
+    else
+    {
+      if (sleep)
+      {
+        sleep_timer = SLEEP_TIME;
+        frequency = FREQUENCY_ASLEEP;
+      }
+      else
+      {
+        sleep_timer++;
+        if (sleep_timer >= SLEEP_TIME)
+        {
+          sleep     = true;
+          frequency = FREQUENCY_ASLEEP;
+        }
+      }
+    }
+
 
     // for ( int i = 0 ; i < KEY_COUNT ; i ++)
     // {
@@ -146,7 +176,7 @@ void loop()
     // set_pins(0);
     // set_multiplexer(0);
 
-    long int timeDifference = 1000 - micros() + inner_start;
+    long int timeDifference = frequency - micros() + inner_start;
     if (timeDifference > 0)
       delayMicroseconds(timeDifference); 
   }
@@ -204,18 +234,19 @@ void loop()
   Serial.println(hz);
 
 
+  */
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
-  */
 
-  // hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
+  hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
+
   // ~~ Speeds notes : ~~ standard clock speed
   // when just doing the 2 analog reads it runs at : 116,813.56 hz
   // When printing each analog value to serial : 9,000 hz
 
-  // Serial.print("\t| HZ = ");
-  // Serial.println(hz);
+  Serial.print("\t| HZ = ");
+  Serial.println(hz);
 
 }
 

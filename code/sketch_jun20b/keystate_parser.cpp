@@ -2,7 +2,10 @@
 
 uint8_t active_layer = 0;
 
-void parse_keys_and_send_usb()
+
+/// @brief 
+/// @return returns true or false depending on whether there was any keys pressed
+bool parse_keys_and_send_usb()
 {
   uint8_t next_active_layer = active_layer;
   static bool active_function_layers[FUNCTION_LAYERS] {0} ; // Used to record which function layer modifier keys are pressed.
@@ -261,4 +264,10 @@ void parse_keys_and_send_usb()
       controller_input_previously = false;
     }
   }
+
+  if (count)
+  {
+    return true;
+  }
+  return false;
 }

@@ -5,7 +5,7 @@
 #include "key.hpp"
 #include "multiplexer.hpp"
 
-void parse_keys_and_send_usb();
+bool parse_keys_and_send_usb();
 
 extern uint8_t active_layer;
 
