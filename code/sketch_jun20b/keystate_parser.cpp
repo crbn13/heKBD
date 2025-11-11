@@ -18,7 +18,7 @@ bool parse_keys_and_send_usb()
   static bool controller_input_previously = false;
   bool controller_input                   = false;
 
-  const int readings_count = 9;
+  const int readings_count = 3;
   int adcReadings[readings_count] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
