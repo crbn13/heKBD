@@ -106,7 +106,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 100;
+const int cycles = 50;
 
 int temparr[35] {0} ;//temporary
 #define SLEEP_TIME 60000u // number of cycles of inactivity to activate sleep mode
@@ -214,6 +214,7 @@ void loop()
   Serial.print("  ");
   Serial.println(keys[1].has_value_changed);
 
+  */
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
@@ -230,8 +231,8 @@ void loop()
     if (i % 7 == 0)
       Serial.print("\n");
   }
-  Serial.print(" | HZ = ");
-  Serial.println(hz);
+  // Serial.print(" | HZ = ");
+  // Serial.println(hz);
 
 
   end = micros();
@@ -247,6 +248,5 @@ void loop()
   Serial.print("\t| HZ = ");
   Serial.println(hz);
 
-  */
 }
 

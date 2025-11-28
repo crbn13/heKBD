@@ -17,19 +17,25 @@ void set_multiplexer(const uint8_t value)
 
   if (active_mtp == +value / 16u) // integer division
   {
+    set_pins(value);
   }
   else
   {
+    digitalWrite(MTP_1_ENABLE_PIN, (0));
+    digitalWrite(MTP_2_ENABLE_PIN,!(0));
+    digitalWrite(MTP_3_ENABLE_PIN, (0));
+    set_pins(value);
     active_mtp = +value/16u;
     digitalWrite(MTP_1_ENABLE_PIN, (0 == active_mtp));
-    digitalWrite(MTP_2_ENABLE_PIN, !(1 == active_mtp));
+    digitalWrite(MTP_2_ENABLE_PIN,!(1 == active_mtp));
     digitalWrite(MTP_3_ENABLE_PIN, (2 == active_mtp));
-    delayMicroseconds(10);
+    delayMicroseconds(30);
   }
 }
 
 void setup_pins()
 {
+  pinMode(ADC1, INPUT_PULLUP);
   pinMode(MTP_BIN_PIN_1, OUTPUT);
   pinMode(MTP_BIN_PIN_2, OUTPUT);
   pinMode(MTP_BIN_PIN_3, OUTPUT);

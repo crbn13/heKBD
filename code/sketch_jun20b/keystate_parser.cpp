@@ -12,6 +12,7 @@ bool parse_keys_and_send_usb()
   
   set_pins(0);
   set_multiplexer(0);
+  delayMicroseconds(40);
 
   // used to avoid send multiple consecutive zero report for keyboard
   static bool keyPressedPreviously        = false;
@@ -38,10 +39,10 @@ bool parse_keys_and_send_usb()
 
     keys[i].real = average; // reads analogue signal last
     
-    set_multiplexer(i + 1); // Set the multiplexer val first because it should be disabled before changing to the wrong key
-    set_pins(i + 1);
+    // set_multiplexer(255); //disables all the multiplexers
 
-    delayMicroseconds(5); // this stops interference between keys
+    set_pins(i + 1); // sets the output pins for the next cycle
+
 
 
     modifier_changed = false;
@@ -228,14 +229,14 @@ bool parse_keys_and_send_usb()
       change_modifier();
     }
 
-    if (count > 5) // usb hid has a max report of 6 keys at a time :(
+    if (count > 6) // usb hid has a max report of 6 keys at a time :(
       break; // break out of 
   } // For loop
 
   active_layer = next_active_layer; // Set last to restrict keys checked aftter modifier key in series
 
+  set_multiplexer(255);
   set_pins(0); // Sets the values for the next loop
-  set_multiplexer(0);
 
   if (TinyUSBDevice.suspended() && count)
   {
@@ -247,7 +248,7 @@ bool parse_keys_and_send_usb()
   // skip if hid is not ready e.g still transferring previous report
 
   // send keyboard data :
-  send_usb_report(&usb_keyboard, keycodes, count);
+  send_usb_report(&usb_keyboard, keycodes, (count > 6 ) ? 0 : count  );
 
   if (controller_input)
   {
