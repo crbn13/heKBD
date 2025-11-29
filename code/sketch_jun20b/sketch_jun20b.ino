@@ -109,7 +109,7 @@ void setup()
 const int cycles = 50;
 
 int temparr[35] {0} ;//temporary
-#define SLEEP_TIME 60000u // number of cycles of inactivity to activate sleep mode
+#define SLEEP_TIME 10000 // number of cycles of inactivity to activate sleep mode
 #define FREQUENCY_AWAKE 1000 //number of microseconds per cycle
 #define FREQUENCY_ASLEEP 100000// number of microseconds per cycle
 void loop()
@@ -182,7 +182,7 @@ void loop()
   }
 
   
-  //neopixel_update(active_layer);
+  neopixel_update(active_layer);
   /*
  
   Serial.print(keys[0].real);

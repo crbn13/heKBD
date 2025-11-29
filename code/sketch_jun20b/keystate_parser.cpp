@@ -19,7 +19,7 @@ bool parse_keys_and_send_usb()
   static bool controller_input_previously = false;
   bool controller_input                   = false;
 
-  const int readings_count = 3;
+  const int readings_count = 1;
   int adcReadings[readings_count] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
@@ -41,7 +41,7 @@ bool parse_keys_and_send_usb()
     
     // set_multiplexer(255); //disables all the multiplexers
 
-    set_pins(i + 1); // sets the output pins for the next cycle
+    set_multiplexer(i + 1); // sets the output pins for the next cycle
 
 
 
@@ -229,8 +229,8 @@ bool parse_keys_and_send_usb()
       change_modifier();
     }
 
-    if (count > 6) // usb hid has a max report of 6 keys at a time :(
-      break; // break out of 
+    // if (count > 6) // usb hid has a max report of 6 keys at a time :(
+    //   break; // break out of 
   } // For loop
 
   active_layer = next_active_layer; // Set last to restrict keys checked aftter modifier key in series
@@ -248,7 +248,7 @@ bool parse_keys_and_send_usb()
   // skip if hid is not ready e.g still transferring previous report
 
   // send keyboard data :
-  send_usb_report(&usb_keyboard, keycodes, (count > 6 ) ? 0 : count  );
+  // send_usb_report(&usb_keyboard, keycodes, (count > 6 ) ? 0 : count  );
 
   if (controller_input)
   {
