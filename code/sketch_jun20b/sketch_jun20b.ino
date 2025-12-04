@@ -99,7 +99,8 @@ void setup()
   key_vals[31].keycode[1] = HID_KEY_F3;
   key_vals[30].keycode[1] = HID_KEY_F4;
   key_vals[29].keycode[1] = HID_KEY_F5;
-  key_vals[15].keycode[1] = HID_KEY_BRACKET_RIGHT;
+  key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
+  key_vals[15].keycode[1] = HID_KEY_F11; // layer1 : bracket
   key_vals[14].keycode[1] = HID_KEY_END;
 
   
@@ -214,7 +215,6 @@ void loop()
   Serial.print("  ");
   Serial.println(keys[1].has_value_changed);
 
-  */
 
   for (uint8_t i = 0; i < KEY_COUNT; i++)
   {
@@ -233,8 +233,8 @@ void loop()
   }
   // Serial.print(" | HZ = ");
   // Serial.println(hz);
-
-
+cvcvvccvxvcccccccvcvvccvcvcvcvcvcvcvcvvvvvvvvvvvvvvvvvvvvvvvvcvcvvccvcvcvvccvcvcv
+cvcvcvcvcvcvxcvbbb
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 
@@ -247,6 +247,8 @@ void loop()
 
   Serial.print("\t| HZ = ");
   Serial.println(hz);
+
+*/
 
 }
 

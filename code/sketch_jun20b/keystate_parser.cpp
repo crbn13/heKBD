@@ -248,7 +248,7 @@ bool parse_keys_and_send_usb()
   // skip if hid is not ready e.g still transferring previous report
 
   // send keyboard data :
-  // send_usb_report(&usb_keyboard, keycodes, (count > 6 ) ? 0 : count  );
+  send_usb_report(&usb_keyboard, keycodes, (count > 5 ) ? 0 : count); // if more than 5 keys pressed send 0 keys
 
   if (controller_input)
   {
