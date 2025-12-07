@@ -58,6 +58,7 @@ void setup()
   key_vals[6].keycode[0] = HID_KEY_CONTROL_LEFT;
   key_vals[6].key_type[0] = KeyTypes::standard_actuation;
   key_vals[7].keycode[0] = HID_KEY_SHIFT_LEFT;
+  key_vals[7].key_type[0] = KeyTypes::standard_actuation;
   key_vals[8].keycode[0] = HID_KEY_Z;
   key_vals[9].keycode[0] = HID_KEY_X;
   key_vals[10].keycode[0] = HID_KEY_C;
@@ -221,20 +222,18 @@ void loop()
     Serial.print(" | Pin ");
     Serial.print(i);
     Serial.print(" = ");
-    Serial.print(keys[i].real);
-    Serial.print(" : ");
+    // Serial.print(keys[i].real);
+    // Serial.print(" : ");
     Serial.print(keys[i].normalised);
     // Serial.print(keys[i].real - temparr[i]);
     // Serial.print(keys[i].real);
     // temparr[i] = keys[i].real;
     Serial.print("\t");
-    if (i % 7 == 0)
+    if (i % 7 == 0 && i > 0) 
       Serial.print("\n");
   }
   // Serial.print(" | HZ = ");
   // Serial.println(hz);
-cvcvvccvxvcccccccvcvvccvcvcvcvcvcvcvcvvvvvvvvvvvvvvvvvvvvvvvvcvcvvccvcvcvvccvcvcv
-cvcvcvcvcvcvxcvbbb
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
 

@@ -14,4 +14,6 @@ void set_multiplexer(const uint8_t value);
 // sets up digital input and output pins
 void setup_pins(); 
 
+int get_active_adc_pin(const uint8_t value);
+
 #endif // Include Guard

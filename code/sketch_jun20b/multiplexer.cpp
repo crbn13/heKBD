@@ -10,8 +10,35 @@ void set_pins(const uint8_t value)
 }
 
 #ifdef DIRECT_MULTIPLEXER_PIN_ENABLE_MODE 
-// Sets the active multiplexer
+
+
+int get_active_adc_pin(const uint8_t value)
+{
+  switch (value / 16u) // integer division to split into pins 0-15, 16-31 32-34
+  {
+  case 0:
+    return A0;
+  case 1:
+    return A1;
+  case 2:
+    return A2;
+  default:
+  break;
+  }
+  Serial.println("SOMETHING WENT REALLY WRONG READING FORM A0 SO IT DOESNT CRASH BUT THIS IS BAD");
+  return A0;
+}
+
+//does nothing i just cba to delete all its references
 void set_multiplexer(const uint8_t value)
+{
+  digitalWrite(MTP_1_ENABLE_PIN, LOW);
+  digitalWrite(MTP_2_ENABLE_PIN, LOW);
+  digitalWrite(MTP_3_ENABLE_PIN, LOW);
+  set_pins(value);
+}
+// Sets the active multiplexer
+void set_multiplexer_old(const uint8_t value)
 {
   static unsigned int active_mtp = 100;
 

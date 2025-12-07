@@ -31,7 +31,7 @@ bool parse_keys_and_send_usb()
   {
 
     for (int j = 0 ; j < readings_count; j++)
-      adcReadings[j] = analogRead(ADC1);
+      adcReadings[j] = analogRead(get_active_adc_pin(i));
     int average {0};
     for (int j = 0 ; j < readings_count; j++)
       average += adcReadings[j];
@@ -77,13 +77,13 @@ bool parse_keys_and_send_usb()
     if (+int(abs((+keys[i].real - keys[i].min_real) * keys[i].factor)) > MAX_NORMALISED_ADC_VAL) // no cheeky buffer overflows
       keys[i].normalised = MAX_NORMALISED_ADC_VAL;
 
-    if (keys[i].active_state) // If the key is pressed down already 
+    if (keys[i].active_state) // If the key is pressed down already
     {
       
     }
-    else // If The key is not already pressed down  
+    else // If The key is not already pressed down
     {
-      key_vals[i].active_fn_layer = active_layer; // set the keys active layer 
+      key_vals[i].active_fn_layer = active_layer; // set the keys active layer
     }
 
     switch (key_vals[i].key_type[key_vals[i].active_fn_layer])
