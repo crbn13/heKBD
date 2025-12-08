@@ -2,6 +2,13 @@
 
 uint8_t active_layer = 0;
 
+static void shift_layers(int x)
+{
+  for (int i = 1 ; i < PAST_READING_COUNT; i++)
+  {
+    keys[x].past_readings[i] = keys[x].past_readings[i-1]; // shifts each element 1 away from index 0
+  }
+}
 
 /// @brief 
 /// @return returns true or false depending on whether there was any keys pressed
@@ -37,7 +44,10 @@ bool parse_keys_and_send_usb()
       average += adcReadings[j];
     average /= readings_count;
 
+
+    shift_layers(i); // shifts past readings 
     keys[i].real = average; // reads analogue signal last
+    keys[i].past_readings[0] = keys[i].real;
     
     // set_multiplexer(255); //disables all the multiplexers
 
@@ -47,15 +57,43 @@ bool parse_keys_and_send_usb()
 
     modifier_changed = false;
 
+    auto fn_avg = [&]()
+    {
+      int total = 0;
+      for (int y = 0; y < PAST_READING_COUNT; y++)
+      {
+        total += keys[i].past_readings[y];
+      }
+      return total / PAST_READING_COUNT;
+    };
+
+    int avg = 0;
     if (keys[i].max_real < keys[i].real)
     {
-      keys[i].max_real = keys[i].real;
-      modifier_changed = true;
+      avg = fn_avg();
+      // keys[i].real = keys[i].max_max_real;
+      if (avg > keys[i].max_real)
+      {
+        keys[i].max_real = avg;
+        modifier_changed = true;
+      }
+      else
+      {
+        keys[i].real = keys[i].max_real;
+      }
     }
     if (keys[i].min_real > keys[i].real)
     {
-      keys[i].min_real = keys[i].real;
-      modifier_changed = true;
+      avg = fn_avg();
+      if (avg < keys[i].min_real)
+      {
+        keys[i].min_real = keys[i].real;
+        modifier_changed = true;
+      }
+      else
+      {
+        keys[i].real = keys[i].min_real;
+      }
     }
 
     auto change_modifier = [&]()

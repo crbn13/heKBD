@@ -36,14 +36,17 @@ struct KeyValue // stores the keycodes and more of each switch, each element of 
   KeyValue();
 };
 
+constexpr int PAST_READING_COUNT = 5;
+
 struct Key {
   uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed
   uint16_t real;          // the value from ADC
   float min_real;         // minimum value read from ADC
-  float max_real;         // value from ADC analog to digital conversion
+  float max_real;         // high band value from ADC analog to digital conversion
   float factor;           // a number to map the un normalised values to 0-255 num
   bool active_state;      // The state that was last sent over usb
   int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
+  uint16_t past_readings[PAST_READING_COUNT]; // the last 5 values read
 
   Key();
 };
