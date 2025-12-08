@@ -36,7 +36,7 @@ struct KeyValue // stores the keycodes and more of each switch, each element of 
   KeyValue();
 };
 
-constexpr int PAST_READING_COUNT = 5;
+constexpr int PAST_READING_COUNT = 10;
 
 struct Key {
   uint8_t normalised;     // number between 0-255 where 0 is unpressed and 255 is fully depressed

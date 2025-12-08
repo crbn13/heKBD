@@ -60,11 +60,11 @@ bool parse_keys_and_send_usb()
     auto fn_avg = [&]()
     {
       int total = 0;
-      for (int y = 1; y < PAST_READING_COUNT; y++)
+      for (int y = 0; y < PAST_READING_COUNT; y++)
       {
         total += keys[i].past_readings[y];
       }
-      return total / PAST_READING_COUNT;
+      return total / (PAST_READING_COUNT);
     };
 
     int avg = 0;
