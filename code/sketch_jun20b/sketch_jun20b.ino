@@ -108,7 +108,7 @@ void setup()
 }  // end of setup
 
 
-const int cycles = 50;
+const int cycles = 100;
 
 int temparr[35] {0} ;//temporary
 #define SLEEP_TIME 10000 // number of cycles of inactivity to activate sleep mode
@@ -234,10 +234,10 @@ void loop()
   }
   // Serial.print(" | HZ = ");
   // Serial.println(hz);
+
+*/
   end = micros();
   // micros() is in micro seconds or E-6 of 1 second
-
-
   hz = 1.0f / (float(end - start) / (1000000.0F * float(cycles)));
 
   // ~~ Speeds notes : ~~ standard clock speed
@@ -247,7 +247,6 @@ void loop()
   Serial.print("\t| HZ = ");
   Serial.println(hz);
 
-*/
 
 }
 
