@@ -1,12 +1,17 @@
+#include "class/hid/hid.h"
 #include "usb_hid.hpp"
 
-uint8_t const desc_hid_report_keyboard[]   = { TUD_HID_REPORT_DESC_KEYBOARD() };
-uint8_t const desc_hid_report_controller[] = { TUD_HID_REPORT_DESC_GAMEPAD () };
+// HID report descriptor using TinyUSB's template
+uint8_t const desc_hid_report[] = {
+    TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(RID_KEYBOARD)),
+    TUD_HID_REPORT_DESC_MOUSE   (HID_REPORT_ID(RID_MOUSE)),
+    TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(RID_CONSUMER_CONTROL))
+};
 
-Adafruit_USBD_HID usb_keyboard;
-Adafruit_USBD_HID usb_controller;
+Adafruit_USBD_HID usb_hid;
 
 hid_gamepad_report_t gamepad;
+hid_mouse_report_t mouse;
 
 void setup_usb()
 {
@@ -17,20 +22,12 @@ void setup_usb()
 
   // Setup KEYBOARD
   // usb_keyboard.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
-  usb_keyboard.setPollInterval(1);
-  usb_keyboard.setReportDescriptor(desc_hid_report_keyboard, sizeof(desc_hid_report_keyboard));
-  usb_keyboard.setStringDescriptor("tinyUSB Keyboard");
+  usb_hid.setPollInterval(1);
+  usb_hid.setReportDescriptor(desc_hid_report, sizeof(desc_hid_report));
+  usb_hid.setStringDescriptor("tinyUSB composite kbd controller mouse");
   // Set up output report (on control endpoint) for Capslock indicator
-  usb_keyboard.setReportCallback(NULL, hid_report_callback);
-  usb_keyboard.begin();
-
-  // Setup Controller
-
-  usb_controller.setPollInterval(1);
-  usb_controller.setReportDescriptor(desc_hid_report_controller, sizeof(desc_hid_report_controller));
-  usb_controller.setStringDescriptor("tinyUSB Controller");
-  usb_controller.begin();
-
+  usb_hid.setReportCallback(NULL, hid_report_callback);
+  usb_hid.begin();
   // If already enumerated, additional class driverr begin() e.g msc, hid, midi won't take effect until re-enumeration
   if (TinyUSBDevice.mounted())
   {
@@ -42,7 +39,7 @@ void setup_usb()
 // Sends Usb report for gamepad
 void send_usb_report(Adafruit_USBD_HID* hid, hid_gamepad_report_t* report)
 {
-  hid->sendReport(0, &gamepad, sizeof(gamepad));
+  hid->sendReport(RID_CONTROLLER, &gamepad, sizeof(gamepad));
 
   // reset gamepad input
   gamepad.x       = 0;
@@ -63,7 +60,7 @@ void send_usb_report(Adafruit_USBD_HID* hid, uint8_t* keyboard_report, uint8_t c
   if (count)
   {
     // Send report if there is key pressed
-    uint8_t const report_id = 0;
+    uint8_t const report_id = RID_KEYBOARD;
     uint8_t const modifier  = 0; // modifier keys stored in array of 1 bit numbers
 
     keyPressedPreviously = true;
@@ -77,9 +74,19 @@ void send_usb_report(Adafruit_USBD_HID* hid, uint8_t* keyboard_report, uint8_t c
     if (keyPressedPreviously)
     {
       keyPressedPreviously = false;
-      hid->keyboardRelease(0);
+      hid->keyboardRelease(RID_KEYBOARD);
     }
   }
+}
+void send_usb_report( Adafruit_USBD_HID* hid, hid_mouse_report_t * report)
+{
+  hid->sendReport(RID_MOUSE, report, sizeof(*report));
+
+  report->buttons = 0;
+  report->pan = 0;
+  report->wheel = 0;
+  report->x = 0;
+  report->y = 0;
 }
 
 void hid_report_callback(uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize)

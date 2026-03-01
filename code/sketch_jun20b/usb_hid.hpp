@@ -1,3 +1,4 @@
+#include "class/hid/hid.h"
 #ifndef GUARD_USB_HID_HPP
 #define GUARD_USB_HID_HPP
 
@@ -5,20 +6,28 @@
 
 #include "config.hpp"
 
-extern uint8_t const desc_hid_report_keyboard[]; //= {TUD_HID_REPORT_DESC_KEYBOARD()};
-extern uint8_t const desc_hid_report_controller[]; //= {TUD_HID_REPORT_DESC_GAMEPAD()};
+// Report ID
+enum {
+  RID_KEYBOARD = 1,
+  RID_MOUSE,
+  RID_CONTROLLER,
+  RID_CONSUMER_CONTROL, // Media, volume etc ..
+};
+
+// HID report descriptor using TinyUSB's template
+extern uint8_t const desc_hid_report[]; 
 
 // HID STUFF :
-extern Adafruit_USBD_HID usb_keyboard;
-extern Adafruit_USBD_HID usb_controller;
-//Adafruit_USBD_HID usb_mouse;
+extern Adafruit_USBD_HID usb_hid;
 
 // Gamepad stuff : 
 extern hid_gamepad_report_t gamepad;
+extern hid_mouse_report_t mouse;
 
 void setup_usb();
 
 void send_usb_report( Adafruit_USBD_HID* hid, hid_gamepad_report_t * report);
+void send_usb_report( Adafruit_USBD_HID* hid, hid_mouse_report_t * report);
 
 void send_usb_report( Adafruit_USBD_HID* hid, uint8_t * keyboard_report, uint8_t count);
 
