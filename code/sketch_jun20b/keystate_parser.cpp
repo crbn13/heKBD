@@ -201,8 +201,13 @@ bool parse_keys_and_send_usb()
     {
       if (keys[i].normalised > key_vals[i].actuation_point)
       {
-        key_vals[i].active_fn_layer = active_layer;
+        // key_vals[i].active_fn_layer = active_layer;
         keycodes[count++] = key_vals[i].keycode[key_vals[i].active_fn_layer];
+        keys[i].active_state = true;
+      }
+      else
+      {
+        keys[i].active_state = false;
       }
       break;
     }
@@ -210,8 +215,13 @@ bool parse_keys_and_send_usb()
     {
       if (int8_t(keys[i].normalised >> 1) >= abs(*key_vals[i].joystick_value))
       {
+        keys[i].active_state = true;
         *key_vals[i].joystick_value = int8_t(keys[i].normalised >> 1) * key_vals[i].joystick_direction;
         controller_input            = true;
+      }
+      else
+      {
+        keys[i].active_state = false;
       }
       break;
     }

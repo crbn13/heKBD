@@ -15,3 +15,8 @@ Analogue input :
 
 function layer issues
  using key on 1st layer, then pressing FN key, key input no longer seen
+ ONLY FOR modifier keys?
+ 
+IDEA:
+  alternate which multiplexer is read from, 
+    eg pin read order: 0,16,32,1,17,33
