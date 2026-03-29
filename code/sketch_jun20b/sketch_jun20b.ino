@@ -97,8 +97,13 @@ void setup()
   key_vals[2].keycode[1] = HID_KEY_VOLUME_UP; // layer 1 : equals
   key_vals[3].keycode[1] = HID_KEY_VOLUME_DOWN; // layer 1 : minus
   key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
-  key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
-  key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+  // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+  // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+  key_vals[17].key_type[1] = KeyTypes::analog_mouse_scroll;
+  key_vals[17].joystick_direction = 1;
+  key_vals[18].key_type[1] = KeyTypes::analog_mouse_scroll;
+  key_vals[18].joystick_direction = -1;
+
   key_vals[34].keycode[1] = HID_KEY_GRAVE;
   key_vals[33].keycode[1] = HID_KEY_F6;
   key_vals[32].keycode[1] = HID_KEY_F7;
@@ -148,7 +153,7 @@ void loop()
       return;
     }
 
-    while (!usb_keyboard.ready() || !usb_controller.ready()) { /* wait till its all done */ }
+    while (!usb_hid.ready()) { /* wait till its all done */ }
 
     if (parse_keys_and_send_usb())
     {

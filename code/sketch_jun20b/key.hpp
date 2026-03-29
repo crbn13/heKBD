@@ -11,6 +11,7 @@ enum
   standard_actuation,
   rapid_trigger,
   analog_joystick,
+  analog_mouse_scroll,
   modifier_key,
   function_key,
   macro_key,

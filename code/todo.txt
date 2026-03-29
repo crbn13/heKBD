@@ -13,10 +13,6 @@ Analogue input :
   create class to easily add analogue pins ? 
   Portion up files ? actually organise some code god forbid
 
-function layer issues
- using key on 1st layer, then pressing FN key, key input no longer seen
- ONLY FOR modifier keys?
- 
 IDEA:
   alternate which multiplexer is read from, 
     eg pin read order: 0,16,32,1,17,33

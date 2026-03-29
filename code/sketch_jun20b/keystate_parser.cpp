@@ -1,3 +1,4 @@
+#include <cmath>
 #include "keystate_parser.hpp"
 
 uint8_t active_layer = 0;
@@ -16,7 +17,7 @@ bool parse_keys_and_send_usb()
 {
   uint8_t next_active_layer = active_layer;
   static bool active_function_layers[FUNCTION_LAYERS] {0} ; // Used to record which function layer modifier keys are pressed.
-  
+  static int mouse_scroll_delay = 0;
   set_pins(0);
   set_multiplexer(0);
   delayMicroseconds(40);
@@ -25,6 +26,8 @@ bool parse_keys_and_send_usb()
   static bool keyPressedPreviously        = false;
   static bool controller_input_previously = false;
   bool controller_input                   = false;
+  bool mouse_input = false;
+  static bool previous_mouse_input = false;
 
   const int readings_count = 1;
   int adcReadings[readings_count] {0};
@@ -259,14 +262,35 @@ bool parse_keys_and_send_usb()
       }
       break;
     }
+    case KeyTypes::analog_mouse_scroll:
+    {
+      int scroll_div = int(log10(float(keys[i].normalised)));
+      if (int8_t(scroll_div) >= 1)
+      {
+        keys[i].active_state = true;
+        if (mouse_scroll_delay < 1)
+        {
+          mouse.wheel = 1 * key_vals[i].joystick_direction;
+          mouse_scroll_delay = 2000;
+        }
+        else
+          mouse_scroll_delay -= keys[i].normalised;
+        mouse_input = true;
+      }
+      else
+      {
+        keys[i].active_state = false;
+      }
+      break;
+    }
     case KeyTypes::unassigned:
     {
         break;
     }
-
     default:
     {
       //nuffin to do here
+      break;
     }
     }
 
@@ -294,14 +318,15 @@ bool parse_keys_and_send_usb()
   }
 
   // skip if hid is not ready e.g still transferring previous report
-
+  if (usb_hid.ready())
+  {
+    
   // send keyboard data :
-  send_usb_report(&usb_keyboard, keycodes, (count > 5 ) ? 0 : count); // if more than 5 keys pressed send 0 keys
+  send_usb_report(&usb_hid, keycodes, (count > 5 ) ? 0 : count); // if more than 5 keys pressed send 0 keys
 
   if (controller_input)
   {
-    send_usb_report(&usb_controller, &gamepad);
-
+    send_usb_report(&usb_hid, &gamepad);
     controller_input            = false;
     controller_input_previously = true;
   }
@@ -309,12 +334,26 @@ bool parse_keys_and_send_usb()
   {
     if (controller_input_previously)
     {
-      send_usb_report(&usb_controller, &gamepad);
+      send_usb_report(&usb_hid, &gamepad);
       controller_input_previously = false;
     }
   }
+  if (mouse_input)
+  {
+    send_usb_report(&usb_hid, &mouse);
+    previous_mouse_input = true;
+  }
+  else
+  {
+    if (previous_mouse_input)
+    {
+      send_usb_report(&usb_hid, &gamepad);
+      previous_mouse_input = false;
+    }
+  }
 
-  if (count)
+  }
+  if (count || controller_input || mouse_input)
   {
     return true;
   }
