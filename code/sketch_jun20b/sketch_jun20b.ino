@@ -75,7 +75,7 @@ void setup()
   key_vals[19].keycode[0] = HID_KEY_L;
   key_vals[20].keycode[0] = HID_KEY_SEMICOLON;
   key_vals[21].keycode[0] = HID_KEY_APOSTROPHE;
-  key_vals[22].keycode[0] = HID_KEY_BACKSLASH;
+  key_vals[22].keycode[0] = HID_KEY_EUROPE_2; // for some reason this is backslash with uk keyboard layout
   key_vals[23].keycode[0] = HID_KEY_P;
   key_vals[24].keycode[0] = HID_KEY_O;
   key_vals[25].keycode[0] = HID_KEY_I;
@@ -99,10 +99,7 @@ void setup()
   key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
   // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
   // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
-  key_vals[17].key_type[1] = KeyTypes::analog_mouse_scroll;
-  key_vals[17].joystick_direction = 1;
-  key_vals[18].key_type[1] = KeyTypes::analog_mouse_scroll;
-  key_vals[18].joystick_direction = -1;
+
 
   key_vals[34].keycode[1] = HID_KEY_GRAVE;
   key_vals[33].keycode[1] = HID_KEY_F6;
@@ -113,12 +110,12 @@ void setup()
   key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
   key_vals[15].keycode[1] = HID_KEY_F12; // layer1 : bracket
   key_vals[14].keycode[1] = HID_KEY_END;
-
   key_vals[16].keycode[1] = HID_KEY_ARROW_LEFT;
   key_vals[17].keycode[1] = HID_KEY_ARROW_DOWN;
   key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
-  key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT;
-  
+  key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT; 
+  key_vals[14].keycode[1] = HID_KEY_BACKSLASH;//HID_KEY_ENTER;
+
 }  // end of setup
 
 
