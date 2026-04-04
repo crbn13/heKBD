@@ -95,17 +95,17 @@ Pixel* RgbPixels::operator[](const std::size_t idx)
 
 void neopixel_update(const int fnLayer)
 {
-  // static unsigned long last_update = micros();
-  // unsigned long timediff = (micros() - last_update) / 1000; // us -> ms
-  // timediff /= 2000;
-  // if (timediff == 0)
-  //   timediff = 1;
+  static unsigned long last_update = micros();
+  unsigned long timediff = (micros() - last_update) / 1000; // us -> ms
+  timediff /= 2000;
+  if (timediff == 0)
+    timediff = 1;
 
   for (int i = 0; i < NEOPIXEL_COUNT; i++)
   {
-    pixels.setPixelColor(i, rgb[i][fnLayer].r , rgb[i][fnLayer].g , rgb[i][fnLayer].b );
-    // pixels.setPixelColor(i, rgb[i][fnLayer].r / timediff, rgb[i][fnLayer].g / timediff, rgb[i][fnLayer].b / timediff);
+    // pixels.setPixelColor(i, rgb[i][fnLayer].r , rgb[i][fnLayer].g , rgb[i][fnLayer].b );
+    pixels.setPixelColor(i, rgb[i][fnLayer].r / timediff, rgb[i][fnLayer].g / timediff, rgb[i][fnLayer].b / timediff);
   }
   pixels.show(); // Send the updated pixel colors to the hardware.
-  // last_update = micros();
+  last_update = micros();
 }

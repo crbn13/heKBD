@@ -194,6 +194,9 @@ int temparr[35] {0} ;//temporary
 #define FREQUENCY_ASLEEP 100000// number of microseconds per cycle
 void loop()
 {
+  try 
+  {
+
   start = micros(); // get time
 
   unsigned long inner_start = micros();
@@ -322,9 +325,14 @@ void loop()
   // when just doing the 2 analog reads it runs at : 116,813.56 hz
   // When printing each analog value to serial : 9,000 hz
 
-  Serial.print("\t| HZ = ");
-  Serial.println(hz);
+  // Serial.print("\t| HZ = ");
+  // Serial.println(hz);
 
+  }
+  catch (...)
+  {
+    Serial.println("WOAH CRASH??");
+  }
 
 }
 
