@@ -100,7 +100,6 @@ void neopixel_update(const int fnLayer)
   timediff /= 2000;
   if (timediff == 0)
     timediff = 1;
-  Serial.println(timediff, 10);
 
   for (int i = 0; i < NEOPIXEL_COUNT; i++)
   {
