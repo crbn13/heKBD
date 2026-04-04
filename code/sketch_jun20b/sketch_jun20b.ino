@@ -45,77 +45,84 @@ void setup()
   }
   
   
-  key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
-  key_vals[0].keycode[0] = 1; // Layer 1
+  // i hope this is evaluated at compile time but i am unsure
+  if (KEYBOARD_HALF == KeyboardSide::RIGHT_HAND_SIDE)
+  {
+    key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[0].keycode[0]  = 1; // Layer 1
+    key_vals[1].keycode[0] = HID_KEY_SPACE;
+    key_vals[2].keycode[0] = HID_KEY_DELETE;
+    key_vals[3].keycode[0] = HID_KEY_SLASH;
+    key_vals[4].keycode[0] = HID_KEY_ARROW_LEFT;
+    // key_vals[4].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[5].keycode[0] = HID_KEY_ARROW_DOWN;
+    // key_vals[5].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[6].keycode[0] = HID_KEY_ARROW_RIGHT;
+    // key_vals[6].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[7].keycode[0]   = HID_KEY_SHIFT_LEFT;
+    key_vals[7].key_type[0]  = KeyTypes::standard_actuation;
+    key_vals[8].keycode[0]   = HID_KEY_ARROW_UP;
+    key_vals[9].keycode[0]   = HID_KEY_PERIOD;
+    key_vals[10].keycode[0]  = HID_KEY_COMMA;
+    key_vals[11].keycode[0]  = HID_KEY_M;
+    key_vals[12].keycode[0]  = HID_KEY_N;
+    key_vals[13].keycode[0]  = HID_KEY_BACKSPACE;
+    key_vals[13].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[14].keycode[0]  = HID_KEY_ENTER;
+    key_vals[14].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[15].keycode[0]  = HID_KEY_BRACKET_RIGHT;
+    key_vals[16].keycode[0]  = HID_KEY_H;
+    key_vals[17].keycode[0]  = HID_KEY_J;
+    key_vals[18].keycode[0]  = HID_KEY_K;
+    key_vals[19].keycode[0]  = HID_KEY_L;
+    key_vals[20].keycode[0]  = HID_KEY_SEMICOLON;
+    key_vals[21].keycode[0]  = HID_KEY_APOSTROPHE;
+    key_vals[22].keycode[0]  = HID_KEY_EUROPE_2; // for some reason this is backslash with uk keyboard layout
+    key_vals[23].keycode[0]  = HID_KEY_P;
+    key_vals[24].keycode[0]  = HID_KEY_O;
+    key_vals[25].keycode[0]  = HID_KEY_I;
+    key_vals[26].keycode[0]  = HID_KEY_U;
+    key_vals[27].keycode[0]  = HID_KEY_Y;
+    key_vals[28].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[28].keycode[0]  = 1; // Layer 1
+    // key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
+    key_vals[29].keycode[0] = HID_KEY_6;
+    key_vals[30].keycode[0] = HID_KEY_7;
+    key_vals[31].keycode[0] = HID_KEY_8;
+    key_vals[32].keycode[0] = HID_KEY_9;
+    key_vals[33].keycode[0] = HID_KEY_0;
+    key_vals[34].keycode[0] = HID_KEY_BACKSPACE;
+    // key_vals[34].key_type[0] = KeyTypes::standard_actuation;
 
-  key_vals[1].keycode[0] = HID_KEY_SPACE;  
-  key_vals[2].keycode[0] = HID_KEY_DELETE;
-  key_vals[3].keycode[0] = HID_KEY_SLASH;
-  key_vals[4].keycode[0] = HID_KEY_ARROW_LEFT;
-  // key_vals[4].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[5].keycode[0] = HID_KEY_ARROW_DOWN;
-  // key_vals[5].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[6].keycode[0] = HID_KEY_ARROW_RIGHT;
-  // key_vals[6].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[7].keycode[0] = HID_KEY_SHIFT_LEFT;
-  key_vals[7].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[8].keycode[0] = HID_KEY_ARROW_UP;
-  key_vals[9].keycode[0] = HID_KEY_PERIOD;
-  key_vals[10].keycode[0] = HID_KEY_COMMA;
-  key_vals[11].keycode[0] = HID_KEY_M;
-  key_vals[12].keycode[0] = HID_KEY_N;
-  key_vals[13].keycode[0] = HID_KEY_BACKSPACE;
-  key_vals[13].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[14].keycode[0] = HID_KEY_ENTER;
-  key_vals[14].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[15].keycode[0] = HID_KEY_BRACKET_RIGHT;
-  key_vals[16].keycode[0] = HID_KEY_H;
-  key_vals[17].keycode[0] = HID_KEY_J;
-  key_vals[18].keycode[0] = HID_KEY_K;
-  key_vals[19].keycode[0] = HID_KEY_L;
-  key_vals[20].keycode[0] = HID_KEY_SEMICOLON;
-  key_vals[21].keycode[0] = HID_KEY_APOSTROPHE;
-  key_vals[22].keycode[0] = HID_KEY_EUROPE_2; // for some reason this is backslash with uk keyboard layout
-  key_vals[23].keycode[0] = HID_KEY_P;
-  key_vals[24].keycode[0] = HID_KEY_O;
-  key_vals[25].keycode[0] = HID_KEY_I;
-  key_vals[26].keycode[0] = HID_KEY_U;
-  key_vals[27].keycode[0] = HID_KEY_Y;
-  key_vals[28].key_type[0] = KeyTypes::function_key; // function layer key
-  key_vals[28].keycode[0] = 1; // Layer 1
-  // key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
-  key_vals[29].keycode[0] = HID_KEY_6;
-  key_vals[30].keycode[0] = HID_KEY_7;
-  key_vals[31].keycode[0] = HID_KEY_8;
-  key_vals[32].keycode[0] = HID_KEY_9;
-  key_vals[33].keycode[0] = HID_KEY_0;
-  key_vals[34].keycode[0] = HID_KEY_BACKSPACE;
-  // key_vals[34].key_type[0] = KeyTypes::standard_actuation;
-  
-  // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
-  key_vals[1].keycode[1] = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
-  key_vals[2].keycode[1] = HID_KEY_VOLUME_UP; // layer 1 : equals
-  key_vals[3].keycode[1] = HID_KEY_VOLUME_DOWN; // layer 1 : minus
-  key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
-  // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
-  // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
-  key_vals[34].keycode[1] = HID_KEY_GRAVE;
-  key_vals[33].keycode[1] = HID_KEY_F6;
-  key_vals[32].keycode[1] = HID_KEY_F7;
-  key_vals[31].keycode[1] = HID_KEY_F8;
-  key_vals[30].keycode[1] = HID_KEY_F9;
-  key_vals[29].keycode[1] = HID_KEY_F10;
-  key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
-  key_vals[15].keycode[1] = HID_KEY_F12; // layer1 : bracket
-  key_vals[14].keycode[1] = HID_KEY_END;
-  key_vals[16].keycode[1] = HID_KEY_ARROW_LEFT;
-  key_vals[17].keycode[1] = HID_KEY_ARROW_DOWN;
-  key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
-  key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT; 
-  key_vals[14].keycode[1] = HID_KEY_BACKSLASH;//HID_KEY_ENTER;
+    // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    key_vals[1].keycode[1]  = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
+    key_vals[2].keycode[1]  = HID_KEY_VOLUME_UP; // layer 1 : equals
+    key_vals[3].keycode[1]  = HID_KEY_VOLUME_DOWN; // layer 1 : minus
+    key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
+    // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+    // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+    key_vals[34].keycode[1] = HID_KEY_GRAVE;
+    key_vals[33].keycode[1] = HID_KEY_F6;
+    key_vals[32].keycode[1] = HID_KEY_F7;
+    key_vals[31].keycode[1] = HID_KEY_F8;
+    key_vals[30].keycode[1] = HID_KEY_F9;
+    key_vals[29].keycode[1] = HID_KEY_F10;
+    key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
+    key_vals[15].keycode[1] = HID_KEY_F12; // layer1 : bracket
+    key_vals[14].keycode[1] = HID_KEY_END;
+    key_vals[16].keycode[1] = HID_KEY_ARROW_LEFT;
+    key_vals[17].keycode[1] = HID_KEY_ARROW_DOWN;
+    key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
+    key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT;
+    key_vals[14].keycode[1] = HID_KEY_BACKSLASH; //HID_KEY_ENTER;
 
-  key_vals[6].key_type[1] = KeyTypes::function_key;
-  key_vals[6].keycode[1] = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
+    key_vals[6].key_type[1] = KeyTypes::function_key;
+    key_vals[6].keycode[1]  = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
+  }
+  else if (KEYBOARD_HALF == KeyboardSide::LEFT_HAND_SIDE)
+  {
+
+  }
 
 }  // end of setup
 
