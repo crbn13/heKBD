@@ -29,8 +29,8 @@ bool parse_keys_and_send_usb()
   bool mouse_input = false;
   static bool previous_mouse_input = false;
 
-  constexpr int readings_count = 1; // changing this from 1 causes it to crash after a single keypress???
-  static int adcReadings[readings_count+1] {0};
+  const int readings_count = 1; // changing this from 1 causes it to crash after a single keypress???
+  int adcReadings[readings_count+1] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
   uint8_t keycodes[KEY_COUNT]   = { 0 }; // array of 6 keys that are being pressed // set to key count in size just in case array overflow44444444444444444444444444444444444444444444444444444444444444444444444444
