@@ -256,7 +256,7 @@ void loop()
     // set_pins(0);
     // set_multiplexer(0);
 
-    unsigned long int timeDifference = frequency - micros() + inner_start;
+    long long int timeDifference = frequency - micros() + inner_start;
     if (timeDifference > 0)
       delayMicroseconds(timeDifference); 
   }
@@ -322,8 +322,8 @@ void loop()
   // when just doing the 2 analog reads it runs at : 116,813.56 hz
   // When printing each analog value to serial : 9,000 hz
 
-  // Serial.print("\t| HZ = ");
-  // Serial.println(hz);
+  Serial.print("\t| HZ = ");
+  Serial.println(hz);
 
 
 }

@@ -29,11 +29,11 @@ bool parse_keys_and_send_usb()
   bool mouse_input = false;
   static bool previous_mouse_input = false;
 
-  const int readings_count = 1;
-  int adcReadings[readings_count] {0};
+  constexpr int readings_count = 1; // changing this from 1 causes it to crash after a single keypress???
+  static int adcReadings[readings_count+1] {0};
 
   uint8_t count         = 0; // the number of keys being pressed
-  uint8_t keycodes[KEY_COUNT]   = { 0 }; // array of 6 keys that are being pressed // set to key count in sise just in case array overflow44444444444444444444444444444444444444444444444444444444444444444444444444
+  uint8_t keycodes[KEY_COUNT]   = { 0 }; // array of 6 keys that are being pressed // set to key count in size just in case array overflow44444444444444444444444444444444444444444444444444444444444444444444444444
   bool modifier_changed = false;
 
   // check active keys and assign to keycode
@@ -42,7 +42,7 @@ bool parse_keys_and_send_usb()
 
     for (int j = 0 ; j < readings_count; j++)
       adcReadings[j] = analogRead(get_active_adc_pin(i));
-    int average {0};
+    int average = 0;
     for (int j = 0 ; j < readings_count; j++)
       average += adcReadings[j];
     average /= readings_count;
@@ -71,6 +71,7 @@ bool parse_keys_and_send_usb()
     };
 
     int avg = 0;
+    // only modifies the maximums and minimums if there are many previous readings
     if (keys[i].max_real < keys[i].real)
     {
       avg = fn_avg();
@@ -101,8 +102,19 @@ bool parse_keys_and_send_usb()
 
     auto change_modifier = [&]()
     {
-      if (keys[i].max_real != keys[i].min_real && keys[i].max_real - keys[i].min_real > 200) // only set modifier if
+      // values from analogRead() range between 0 and 4095
+      // the minimum_real_difference means that the range of values from a given key must 
+      // change more than it before the key is properly read from
+      constexpr auto minimum_real_difference = 300;
+      if (
+          keys[i].max_real > keys[i].min_real
+          && 
+          keys[i].max_real - keys[i].min_real > minimum_real_difference
+        )
         keys[i].factor = (float)(NORMALISED_ADC_VAL)(-1) / (keys[i].max_real - keys[i].min_real);
+      // else
+        // keys[i].factor = 0.0f;
+        
       modifier_changed = false;
     };
 
