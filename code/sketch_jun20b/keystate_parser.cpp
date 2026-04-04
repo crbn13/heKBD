@@ -105,7 +105,7 @@ bool parse_keys_and_send_usb()
       // values from analogRead() range between 0 and 4095
       // the minimum_real_difference means that the range of values from a given key must 
       // change more than it before the key is properly read from
-      constexpr auto minimum_real_difference = 300;
+      const auto minimum_real_difference = 300;
       if (
           keys[i].max_real > keys[i].min_real
           && 
