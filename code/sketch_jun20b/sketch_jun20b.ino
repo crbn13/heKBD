@@ -99,8 +99,6 @@ void setup()
   key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
   // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
   // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
-
-
   key_vals[34].keycode[1] = HID_KEY_GRAVE;
   key_vals[33].keycode[1] = HID_KEY_F6;
   key_vals[32].keycode[1] = HID_KEY_F7;
@@ -115,6 +113,9 @@ void setup()
   key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
   key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT; 
   key_vals[14].keycode[1] = HID_KEY_BACKSLASH;//HID_KEY_ENTER;
+
+  key_vals[6].key_type[1] = KeyTypes::function_key;
+  key_vals[6].keycode[1] = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
 
 }  // end of setup
 
