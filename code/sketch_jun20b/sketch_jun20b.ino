@@ -323,7 +323,7 @@ void loop()
   // When printing each analog value to serial : 9,000 hz
 
   // Serial.print("\t| HZ = ");
-  Serial.println(hz);
+  // Serial.println(hz);
 
 
 }
