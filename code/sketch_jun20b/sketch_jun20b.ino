@@ -122,6 +122,65 @@ void setup()
   else if (KEYBOARD_HALF == KeyboardSide::LEFT_HAND_SIDE)
   {
 
+    key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[0].keycode[0]  = 1; // Layer 1
+    key_vals[1].keycode[0]  = HID_KEY_SPACE;
+    key_vals[2].keycode[0]  = HID_KEY_EQUAL;
+    key_vals[3].keycode[0]  = HID_KEY_MINUS;
+    key_vals[4].keycode[0]  = HID_KEY_ALT_LEFT;
+    key_vals[4].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[5].keycode[0]  = HID_KEY_GUI_LEFT;
+    key_vals[5].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[6].keycode[0]  = HID_KEY_CONTROL_LEFT;
+    key_vals[6].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[7].keycode[0]  = HID_KEY_SHIFT_LEFT;
+    key_vals[7].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[8].keycode[0]  = HID_KEY_Z;
+    key_vals[9].keycode[0]  = HID_KEY_X;
+    key_vals[10].keycode[0] = HID_KEY_C;
+    key_vals[11].keycode[0] = HID_KEY_V;
+    key_vals[12].keycode[0] = HID_KEY_B;
+    key_vals[13].keycode[0] = HID_KEY_CAPS_LOCK;
+    key_vals[14].keycode[0] = HID_KEY_HOME;
+    key_vals[15].keycode[0] = HID_KEY_BRACKET_LEFT;
+    key_vals[16].keycode[0] = HID_KEY_G;
+    key_vals[17].keycode[0] = HID_KEY_F;
+    key_vals[18].keycode[0] = HID_KEY_D;
+    key_vals[19].keycode[0] = HID_KEY_S;
+    key_vals[20].keycode[0] = HID_KEY_A;
+    key_vals[21].keycode[0] = HID_KEY_0;
+    key_vals[22].keycode[0] = HID_KEY_TAB;
+    key_vals[23].keycode[0] = HID_KEY_Q;
+    key_vals[24].keycode[0] = HID_KEY_W;
+    key_vals[25].keycode[0] = HID_KEY_E;
+    key_vals[26].keycode[0] = HID_KEY_R;
+    key_vals[27].keycode[0] = HID_KEY_T;
+    key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
+    key_vals[29].keycode[0] = HID_KEY_5;
+    key_vals[30].keycode[0] = HID_KEY_4;
+    key_vals[31].keycode[0] = HID_KEY_3;
+    key_vals[32].keycode[0] = HID_KEY_2;
+    key_vals[33].keycode[0] = HID_KEY_1;
+    key_vals[34].keycode[0] = HID_KEY_ESCAPE;
+
+    // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    key_vals[1].keycode[1]  = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
+    key_vals[2].keycode[1]  = HID_KEY_VOLUME_UP; // layer 1 : equals
+    key_vals[3].keycode[1]  = HID_KEY_VOLUME_DOWN; // layer 1 : minus
+    key_vals[6].key_type[1] = KeyTypes::function_key;
+    key_vals[6].keycode[1]  = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
+    key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
+    key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+    key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+    key_vals[34].keycode[1] = HID_KEY_GRAVE;
+    key_vals[33].keycode[1] = HID_KEY_F1;
+    key_vals[32].keycode[1] = HID_KEY_F2;
+    key_vals[31].keycode[1] = HID_KEY_F3;
+    key_vals[30].keycode[1] = HID_KEY_F4;
+    key_vals[29].keycode[1] = HID_KEY_F5;
+    key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
+    key_vals[15].keycode[1] = HID_KEY_F11; // layer1 : bracket
+    key_vals[14].keycode[1] = HID_KEY_END;
   }
 
 }  // end of setup
