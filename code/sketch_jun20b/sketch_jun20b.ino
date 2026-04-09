@@ -20,8 +20,7 @@ float hz = 0;
 
 void setup()
 {
-  Serial.begin(19200);
-
+  Serial.begin(115200);
   setup_pins();
   setup_usb();
   neopixel_setup();
@@ -45,71 +44,145 @@ void setup()
   }
   
   
-  key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
-  key_vals[0].keycode[0] = 1; // Layer 1
+  // i hope this is evaluated at compile time but i am unsure
+  if (KEYBOARD_HALF == KeyboardSide::RIGHT_HAND_SIDE)
+  {
+    key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[0].keycode[0]  = 1; // Layer 1
+    key_vals[1].keycode[0] = HID_KEY_SPACE;
+    key_vals[2].keycode[0] = HID_KEY_DELETE;
+    key_vals[3].keycode[0] = HID_KEY_SLASH;
+    key_vals[4].keycode[0] = HID_KEY_ARROW_LEFT;
+    // key_vals[4].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[5].keycode[0] = HID_KEY_ARROW_DOWN;
+    // key_vals[5].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[6].keycode[0] = HID_KEY_ARROW_RIGHT;
+    // key_vals[6].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[7].keycode[0]   = HID_KEY_SHIFT_LEFT;
+    key_vals[7].key_type[0]  = KeyTypes::standard_actuation;
+    key_vals[8].keycode[0]   = HID_KEY_ARROW_UP;
+    key_vals[9].keycode[0]   = HID_KEY_PERIOD;
+    key_vals[10].keycode[0]  = HID_KEY_COMMA;
+    key_vals[11].keycode[0]  = HID_KEY_M;
+    key_vals[12].keycode[0]  = HID_KEY_N;
+    key_vals[13].keycode[0]  = HID_KEY_BACKSPACE;
+    key_vals[13].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[14].keycode[0]  = HID_KEY_ENTER;
+    key_vals[14].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[15].keycode[0]  = HID_KEY_BRACKET_RIGHT;
+    key_vals[16].keycode[0]  = HID_KEY_H;
+    key_vals[17].keycode[0]  = HID_KEY_J;
+    key_vals[18].keycode[0]  = HID_KEY_K;
+    key_vals[19].keycode[0]  = HID_KEY_L;
+    key_vals[20].keycode[0]  = HID_KEY_SEMICOLON;
+    key_vals[21].keycode[0]  = HID_KEY_APOSTROPHE;
+    key_vals[22].keycode[0]  = HID_KEY_EUROPE_2; // for some reason this is backslash with uk keyboard layout
+    key_vals[23].keycode[0]  = HID_KEY_P;
+    key_vals[24].keycode[0]  = HID_KEY_O;
+    key_vals[25].keycode[0]  = HID_KEY_I;
+    key_vals[26].keycode[0]  = HID_KEY_U;
+    key_vals[27].keycode[0]  = HID_KEY_Y;
+    key_vals[28].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[28].keycode[0]  = 1; // Layer 1
+    // key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
+    key_vals[29].keycode[0] = HID_KEY_6;
+    key_vals[30].keycode[0] = HID_KEY_7;
+    key_vals[31].keycode[0] = HID_KEY_8;
+    key_vals[32].keycode[0] = HID_KEY_9;
+    key_vals[33].keycode[0] = HID_KEY_0;
+    key_vals[34].keycode[0] = HID_KEY_BACKSPACE;
+    // key_vals[34].key_type[0] = KeyTypes::standard_actuation;
 
-  key_vals[1].keycode[0] = HID_KEY_SPACE;  
-  key_vals[2].keycode[0] = HID_KEY_EQUAL;
-  key_vals[3].keycode[0] = HID_KEY_MINUS;
-  key_vals[4].keycode[0] = HID_KEY_ALT_LEFT;
-  key_vals[4].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[5].keycode[0] = HID_KEY_GUI_LEFT;
-  key_vals[5].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[6].keycode[0] = HID_KEY_CONTROL_LEFT;
-  key_vals[6].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[7].keycode[0] = HID_KEY_SHIFT_LEFT;
-  key_vals[7].key_type[0] = KeyTypes::standard_actuation;
-  key_vals[8].keycode[0] = HID_KEY_Z;
-  key_vals[9].keycode[0] = HID_KEY_X;
-  key_vals[10].keycode[0] = HID_KEY_C;
-  key_vals[11].keycode[0] = HID_KEY_V;
-  key_vals[12].keycode[0] = HID_KEY_B;
-  key_vals[13].keycode[0] = HID_KEY_CAPS_LOCK;
-  key_vals[14].keycode[0] = HID_KEY_HOME;
-  key_vals[15].keycode[0] = HID_KEY_BRACKET_LEFT;
-  key_vals[16].keycode[0] = HID_KEY_G;
-  key_vals[17].keycode[0] = HID_KEY_F;
-  key_vals[18].keycode[0] = HID_KEY_D;
-  key_vals[19].keycode[0] = HID_KEY_S;
-  key_vals[20].keycode[0] = HID_KEY_A;
-  key_vals[21].keycode[0] = HID_KEY_0;
-  key_vals[22].keycode[0] = HID_KEY_TAB;
-  key_vals[23].keycode[0] = HID_KEY_Q;
-  key_vals[24].keycode[0] = HID_KEY_W;
-  key_vals[25].keycode[0] = HID_KEY_E;
-  key_vals[26].keycode[0] = HID_KEY_R;
-  key_vals[27].keycode[0] = HID_KEY_T;
-  key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
-  key_vals[29].keycode[0] = HID_KEY_5;
-  key_vals[30].keycode[0] = HID_KEY_4;
-  key_vals[31].keycode[0] = HID_KEY_3;
-  key_vals[32].keycode[0] = HID_KEY_2;
-  key_vals[33].keycode[0] = HID_KEY_1;
-  key_vals[34].keycode[0] = HID_KEY_ESCAPE;
-  
-  // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
-  key_vals[1].keycode[1] = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
-  key_vals[2].keycode[1] = HID_KEY_VOLUME_UP; // layer 1 : equals
-  key_vals[3].keycode[1] = HID_KEY_VOLUME_DOWN; // layer 1 : minus
-  key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
-  // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
-  // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
-  key_vals[17].key_type[1] = KeyTypes::analog_mouse_scroll;
-  key_vals[17].joystick_direction = 1;
-  key_vals[18].key_type[1] = KeyTypes::analog_mouse_scroll;
-  key_vals[18].joystick_direction = -1;
+    // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    key_vals[1].keycode[1]  = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
+    key_vals[2].keycode[1]  = HID_KEY_VOLUME_UP; // layer 1 : equals
+    key_vals[3].keycode[1]  = HID_KEY_VOLUME_DOWN; // layer 1 : minus
+    key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
+    // key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+    // key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+    key_vals[34].keycode[1] = HID_KEY_GRAVE;
+    key_vals[33].keycode[1] = HID_KEY_F6;
+    key_vals[32].keycode[1] = HID_KEY_F7;
+    key_vals[31].keycode[1] = HID_KEY_F8;
+    key_vals[30].keycode[1] = HID_KEY_F9;
+    key_vals[29].keycode[1] = HID_KEY_F10;
+    key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
+    key_vals[15].keycode[1] = HID_KEY_F12; // layer1 : bracket
+    key_vals[14].keycode[1] = HID_KEY_END;
+    key_vals[16].keycode[1] = HID_KEY_ARROW_LEFT;
+    key_vals[17].keycode[1] = HID_KEY_ARROW_DOWN;
+    key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
+    key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT;
+    key_vals[14].keycode[1] = HID_KEY_BACKSLASH; //HID_KEY_ENTER;
+    key_vals[14].key_type[1] = KeyTypes::standard_actuation; //HID_KEY_ENTER;
 
-  key_vals[34].keycode[1] = HID_KEY_GRAVE;
-  key_vals[33].keycode[1] = HID_KEY_F1;
-  key_vals[32].keycode[1] = HID_KEY_F2;
-  key_vals[31].keycode[1] = HID_KEY_F3;
-  key_vals[30].keycode[1] = HID_KEY_F4;
-  key_vals[29].keycode[1] = HID_KEY_F5;
-  key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
-  key_vals[15].keycode[1] = HID_KEY_F11; // layer1 : bracket
-  key_vals[14].keycode[1] = HID_KEY_END;
+    key_vals[6].key_type[1] = KeyTypes::function_key;
+    key_vals[6].keycode[1]  = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
+  }
+  else if (KEYBOARD_HALF == KeyboardSide::LEFT_HAND_SIDE)
+  {
 
-  
+    key_vals[0].key_type[0] = KeyTypes::function_key; // function layer key
+    key_vals[0].keycode[0]  = 1; // Layer 1
+    key_vals[1].keycode[0]  = HID_KEY_SPACE;
+    key_vals[2].keycode[0]  = HID_KEY_EQUAL;
+    key_vals[3].keycode[0]  = HID_KEY_MINUS;
+    key_vals[4].keycode[0]  = HID_KEY_ALT_LEFT;
+    key_vals[4].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[5].keycode[0]  = HID_KEY_GUI_LEFT;
+    key_vals[5].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[6].keycode[0]  = HID_KEY_CONTROL_LEFT;
+    key_vals[6].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[7].keycode[0]  = HID_KEY_SHIFT_LEFT;
+    key_vals[7].key_type[0] = KeyTypes::standard_actuation;
+    key_vals[8].keycode[0]  = HID_KEY_Z;
+    key_vals[9].keycode[0]  = HID_KEY_X;
+    key_vals[10].keycode[0] = HID_KEY_C;
+    key_vals[11].keycode[0] = HID_KEY_V;
+    key_vals[12].keycode[0] = HID_KEY_B;
+    key_vals[13].keycode[0] = HID_KEY_CAPS_LOCK;
+    key_vals[14].keycode[0] = HID_KEY_HOME;
+    key_vals[15].keycode[0] = HID_KEY_BRACKET_LEFT;
+    key_vals[16].keycode[0] = HID_KEY_G;
+    key_vals[17].keycode[0] = HID_KEY_F;
+    key_vals[18].keycode[0] = HID_KEY_D;
+    key_vals[19].keycode[0] = HID_KEY_S;
+    key_vals[20].keycode[0] = HID_KEY_A;
+    key_vals[21].keycode[0] = HID_KEY_0;
+    key_vals[22].keycode[0] = HID_KEY_TAB;
+    key_vals[23].keycode[0] = HID_KEY_Q;
+    key_vals[24].keycode[0] = HID_KEY_W;
+    key_vals[25].keycode[0] = HID_KEY_E;
+    key_vals[26].keycode[0] = HID_KEY_R;
+    key_vals[27].keycode[0] = HID_KEY_T;
+    key_vals[28].keycode[0] = HID_KEY_PAGE_UP;
+    key_vals[29].keycode[0] = HID_KEY_5;
+    key_vals[30].keycode[0] = HID_KEY_4;
+    key_vals[31].keycode[0] = HID_KEY_3;
+    key_vals[32].keycode[0] = HID_KEY_2;
+    key_vals[33].keycode[0] = HID_KEY_1;
+    key_vals[34].keycode[0] = HID_KEY_ESCAPE;
+
+    // Layer 2 : ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    key_vals[1].keycode[1]  = HID_USAGE_CONSUMER_PLAY_PAUSE; // layer 1 : equals
+    key_vals[2].keycode[1]  = HID_KEY_VOLUME_UP; // layer 1 : equals
+    key_vals[3].keycode[1]  = HID_KEY_VOLUME_DOWN; // layer 1 : minus
+    key_vals[6].key_type[1] = KeyTypes::function_key;
+    key_vals[6].keycode[1]  = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
+    key_vals[13].keycode[1] = HID_KEY_PRINT_SCREEN; // layer 1 : capslock
+    key_vals[17].keycode[1] = HID_KEY_PAGE_UP; // layer 1 : F
+    key_vals[18].keycode[1] = HID_KEY_PAGE_DOWN; // layer 1 : D
+    key_vals[34].keycode[1] = HID_KEY_GRAVE;
+    key_vals[33].keycode[1] = HID_KEY_F1;
+    key_vals[32].keycode[1] = HID_KEY_F2;
+    key_vals[31].keycode[1] = HID_KEY_F3;
+    key_vals[30].keycode[1] = HID_KEY_F4;
+    key_vals[29].keycode[1] = HID_KEY_F5;
+    key_vals[28].keycode[1] = HID_KEY_PAGE_DOWN;
+    key_vals[15].keycode[1] = HID_KEY_F11; // layer1 : bracket
+    key_vals[14].keycode[1] = HID_KEY_END;
+  }
+
 }  // end of setup
 
 
@@ -117,10 +190,13 @@ const int cycles = 100;
 
 int temparr[35] {0} ;//temporary
 #define SLEEP_TIME 10000 // number of cycles of inactivity to activate sleep mode
-#define FREQUENCY_AWAKE 1000 //number of microseconds per cycle
+#define FREQUENCY_AWAKE 2000 //number of microseconds per cycle
 #define FREQUENCY_ASLEEP 100000// number of microseconds per cycle
 void loop()
 {
+  // try 
+  // {
+
   start = micros(); // get time
 
   unsigned long inner_start = micros();
@@ -144,10 +220,18 @@ void loop()
       return;
     }
 
-    while (!usb_hid.ready()) { /* wait till its all done */ }
-
+    while (!usb_hid.ready())
+    {
+      delayMicroseconds(1);
+      // Serial.println("WAITING");
+      // Serial.flush();
+      rgb[0][0] = Pixel(0,0,20);
+      neopixel_update(0);
+    }
+    rgb[0][0] = Pixel(5,0,0);
     if (parse_keys_and_send_usb())
     {
+      // Serial.println("KEYPRESSED");
       sleep_timer = 0u;
       sleep = false;
       frequency = FREQUENCY_AWAKE;
@@ -183,7 +267,7 @@ void loop()
     // set_pins(0);
     // set_multiplexer(0);
 
-    long int timeDifference = frequency - micros() + inner_start;
+    long long int timeDifference = frequency - micros() + inner_start;
     if (timeDifference > 0)
       delayMicroseconds(timeDifference); 
   }
@@ -252,6 +336,11 @@ void loop()
   Serial.print("\t| HZ = ");
   Serial.println(hz);
 
+  // }
+  // catch (...)
+  // {
+  //   Serial.println("WOAH CRASH??");
+  // }
 
 }
 

@@ -11,7 +11,7 @@ KeyValue::KeyValue() : keycode{0}, key_type{0}, actuation_point(MAX_NORMALISED_A
   for (int i = 0 ; i < FUNCTION_LAYERS ; i++)
   {
     key_type[i] = KeyTypes::rapid_trigger;
-    keycode[i] = HID_KEY_Z;
+    keycode[i] = HID_KEY_NONE;
   }
 }
 

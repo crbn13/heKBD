@@ -47,7 +47,7 @@ struct Key {
   float factor;           // a number to map the un normalised values to 0-255 num
   bool active_state;      // The state that was last sent over usb
   int has_value_changed;  // If the value hasnt changed for a few frames and the key isnt pressed we can reset the min value
-  uint16_t past_readings[PAST_READING_COUNT]; // the last 5 values read
+  uint16_t past_readings[PAST_READING_COUNT]; // the last x values read
 
   Key();
 };

@@ -1,11 +1,19 @@
-#ifndef GUARD_CONFIG_HPP
-#define GUARD_CONFIG_HPP
+#ifndef _GUARD_CONFIG_HPP
+#define _GUARD_CONFIG_HPP
 
 #include <cstdio>
 #include <Arduino.h>
 #include <Adafruit_TinyUSB.h>
 
+enum class KeyboardSide // which keyboard half to compile for
+{
+    LEFT_HAND_SIDE,
+    RIGHT_HAND_SIDE
+};
+
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
+
+#define KEYBOARD_HALF KeyboardSide::RIGHT_HAND_SIDE // change this to set which half of the keybaord to compile for
 
 #define KEY_COUNT 35
 #define FUNCTION_LAYERS 4
