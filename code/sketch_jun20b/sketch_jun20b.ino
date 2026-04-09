@@ -114,6 +114,7 @@ void setup()
     key_vals[18].keycode[1] = HID_KEY_ARROW_UP;
     key_vals[19].keycode[1] = HID_KEY_ARROW_RIGHT;
     key_vals[14].keycode[1] = HID_KEY_BACKSLASH; //HID_KEY_ENTER;
+    key_vals[14].key_type[1] = KeyTypes::standard_actuation; //HID_KEY_ENTER;
 
     key_vals[6].key_type[1] = KeyTypes::function_key;
     key_vals[6].keycode[1]  = 2; //HID_KEY_ARROW_RIGHT; // sets to layer 2
