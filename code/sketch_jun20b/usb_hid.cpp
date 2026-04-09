@@ -21,10 +21,13 @@ void setup_usb()
   }
 
   // Setup KEYBOARD
-  // usb_keyboard.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
+  usb_hid.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
   usb_hid.setPollInterval(1);
   usb_hid.setReportDescriptor(desc_hid_report, sizeof(desc_hid_report));
-  usb_hid.setStringDescriptor("tinyUSB composite kbd controller mouse");
+  if (KEYBOARD_HALF == KeyboardSide::RIGHT_HAND_SIDE)
+    usb_hid.setStringDescriptor("crbn13 analog keyboard RHS");
+  else if (KEYBOARD_HALF == KeyboardSide::LEFT_HAND_SIDE)
+    usb_hid.setStringDescriptor("crbn13 analog keyboard LHS");
   // Set up output report (on control endpoint) for Capslock indicator
   usb_hid.setReportCallback(NULL, hid_report_callback);
   usb_hid.begin();

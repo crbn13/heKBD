@@ -20,8 +20,7 @@ float hz = 0;
 
 void setup()
 {
-  Serial.begin(19200);
-
+  Serial.begin(115200);
   setup_pins();
   setup_usb();
   neopixel_setup();
@@ -190,12 +189,12 @@ const int cycles = 100;
 
 int temparr[35] {0} ;//temporary
 #define SLEEP_TIME 10000 // number of cycles of inactivity to activate sleep mode
-#define FREQUENCY_AWAKE 1000 //number of microseconds per cycle
+#define FREQUENCY_AWAKE 2000 //number of microseconds per cycle
 #define FREQUENCY_ASLEEP 100000// number of microseconds per cycle
 void loop()
 {
-  try 
-  {
+  // try 
+  // {
 
   start = micros(); // get time
 
@@ -220,10 +219,18 @@ void loop()
       return;
     }
 
-    while (!usb_hid.ready()) { /* wait till its all done */ }
-
+    while (!usb_hid.ready())
+    {
+      delayMicroseconds(1);
+      // Serial.println("WAITING");
+      // Serial.flush();
+      rgb[0][0] = Pixel(0,0,20);
+      neopixel_update(0);
+    }
+    rgb[0][0] = Pixel(5,0,0);
     if (parse_keys_and_send_usb())
     {
+      // Serial.println("KEYPRESSED");
       sleep_timer = 0u;
       sleep = false;
       frequency = FREQUENCY_AWAKE;
@@ -325,14 +332,14 @@ void loop()
   // when just doing the 2 analog reads it runs at : 116,813.56 hz
   // When printing each analog value to serial : 9,000 hz
 
-  // Serial.print("\t| HZ = ");
-  // Serial.println(hz);
+  Serial.print("\t| HZ = ");
+  Serial.println(hz);
 
-  }
-  catch (...)
-  {
-    Serial.println("WOAH CRASH??");
-  }
+  // }
+  // catch (...)
+  // {
+  //   Serial.println("WOAH CRASH??");
+  // }
 
 }
 

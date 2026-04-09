@@ -13,10 +13,7 @@ enum class KeyboardSide // which keyboard half to compile for
 
 // Reasonable config stuff ~~~~~~~~~~~~~~~~~~~~~~
 
-
-#ifndef KEYBOARD_HALF
-#define KEYBOARD_HALF KeyboardSide::LEFT_HAND_SIDE // change this to set which half of the keybaord to compile for
-#endif
+#define KEYBOARD_HALF KeyboardSide::RIGHT_HAND_SIDE // change this to set which half of the keybaord to compile for
 
 #define KEY_COUNT 35
 #define FUNCTION_LAYERS 4
